@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script>
+        window.addEventListener("load", function() {
+            if (top == window) location.replace("./");
+        });
+        window.addEventListener("popstate", function() {
+            top._log("Popstate event fired");
+            window.history.pushState(null, top.document.title);
+        });
+        window.document.title = top.document.title;
+        window.history.pushState(null, top.document.title);
+    </script>
+</head>
+<body></body>
+</html>

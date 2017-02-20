@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="css/common.css" rel="stylesheet">
+    <link href="css/font.css" rel="stylesheet">
+    <link href="css/easymoney.main.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.transit.js"></script>
+    <script src="js/jquery.touchswipe.js"></script>
+    <script src="js/ion.sound.js"></script>
+    <script src="js/slots/common.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/autoplay.js"></script>
+    <script src="js/easymoney.main.js"></script>
+</head>
+<body>
+<div id="container">
+    <div id="side_menu">
+        <div>
+            <div id="content">
+                <div id="bet_selector" class="selector">
+                    <div class="value">
+                        <span></span>
+                    </div>
+                    <div class="minus_btn btn">
+                        <span>-</span>
+                    </div>
+                    <div class="plus_btn btn">
+                        <span>+</span>
+                    </div>
+                    <div class="max_btn btn">
+                        <div data-lang_id="maxBet"></div>
+                    </div>
+                </div>
+                <div id="lines_selector" class="selector">
+                    <div class="value">
+                        <span></span>
+                    </div>
+                    <div class="minus_btn btn">
+                        <span>-</span>
+                    </div>
+                    <div class="plus_btn btn">
+                        <span>+</span>
+                    </div>
+                    <div class="max_btn btn">
+                        <div data-lang_id="allLines"></div>
+                    </div>
+                </div>
+                <div id="spin_btn" class="btn btn_large">
+                    <div data-lang_id="spin"></div>
+                </div>
+                <div id="skip_btn" class="btn btn_large">
+                    <div data-lang_id="stop"></div>
+                </div>
+                <div id="autoplay_btn" class="btn">
+                    <div data-lang_id="autoplay"></div>
+                </div>
+                <div id="stop_btn" class="btn">
+                    <div data-lang_id="stop"></div>
+                </div>
+                <div id="collect_btn" class="btn btn_middle">
+                    <div data-lang_id="collect"></div>
+                </div>
+                <div id="double_btn" class="btn btn_middle">
+                    <div data-lang_id="double"></div>
+                </div>
+                <div id="paytable_btn" class="btn">
+                    <div data-lang_id="payTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="safe" class="safe"></div>
+    <div class="reel_bg"></div>
+    <div class="reels_tint"></div>
+    <canvas id="reels_canvas" class="main_canvas force3d" width="847" height="457"></canvas>
+    <canvas id="lines_canvas" class="main_canvas force3d" width="847" height="457"></canvas>
+    <canvas id="strokes_canvas" class="main_canvas force3d" width="847" height="457"></canvas>
+    <canvas id="winnings_canvas" class="main_canvas force3d" width="847" height="457"></canvas>
+    <div id="lines_btn_container" class="border-box-container">
+        <div class="left_panel">
+            <div class="line_btn line_btn_1" data-line="1">1</div>
+            <div class="line_btn line_btn_2" data-line="2">2</div>
+            <div class="line_btn line_btn_3" data-line="3">3</div>
+            <div class="line_btn line_btn_4" data-line="4">4</div>
+            <div class="line_btn line_btn_5" data-line="5">5</div>
+            <div class="line_btn line_btn_6" data-line="6">6</div>
+            <div class="line_btn line_btn_7" data-line="7">7</div>
+            <div class="line_btn line_btn_8" data-line="8">8</div>
+            <div class="line_btn line_btn_9" data-line="9">9</div>
+        </div>
+        <div class="right_panel">
+            <div class="line_btn line_btn_1" data-line="1">1</div>
+            <div class="line_btn line_btn_2" data-line="2">2</div>
+            <div class="line_btn line_btn_3" data-line="3">3</div>
+            <div class="line_btn line_btn_4" data-line="4">4</div>
+            <div class="line_btn line_btn_5" data-line="5">5</div>
+            <div class="line_btn line_btn_6" data-line="6">6</div>
+            <div class="line_btn line_btn_7" data-line="7">7</div>
+            <div class="line_btn line_btn_8" data-line="8">8</div>
+            <div class="line_btn line_btn_9" data-line="9">9</div>
+        </div>
+    </div>
+    <div id="gestures_area">
+        <div></div>
+    </div>
+    <div id="autoplay_tables">
+        <div id="autopt_tl">
+            <span data-lang_id="autoplay"></span>:
+            <span class="value"></span>
+        </div>
+        <div id="autopt_tr">
+            <span data-lang_id="autoplay"></span>:
+            <span class="value"></span>
+        </div>
+    </div>
+    <div class="overlay autoplay_window"></div>
+    <div id="autoplay_window" class="main autoplay_window border-box border-box-container">
+        <div id="autoplay_outline"></div>
+        <div class="autoplay_title" data-lang_id="autoplay"></div>
+        <table>
+            <tr>
+                <td></td>
+                <td>
+                    <span data-lang_id="gamesAmount"></span>
+                </td>
+                <td>
+                    <div id="spins_count" class="selector">
+                        <div class="value">
+                            <input type="text" maxlength="3" data-max_value="999">
+                        </div>
+                        <div class="minus_btn btn">
+                            <span>-</span>
+                        </div>
+                        <div class="plus_btn btn">
+                            <span>+</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <span data-lang_id="pauseBetweenGames"></span>
+                </td>
+                <td>
+                    <div id="delay" class="selector">
+                        <div class="value">
+                            <input type="text" maxlength="2" data-max_value="10">
+                        </div>
+                        <div class="minus_btn btn">
+                            <span>-</span>
+                        </div>
+                        <div class="plus_btn btn">
+                            <span>+</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="custom">
+                        <input type="radio" name="mode" value="spins_mode">
+                        <span></span>
+                    </label>
+                </td>
+                <td>
+                    <span data-lang_id="stopWhenCompleting"></span>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="custom">
+                        <input type="radio" name="mode" value="winnings_mode">
+                        <span></span>
+                    </label>
+                </td>
+                <td>
+                    <span data-lang_id="stopWhenWinnings"></span>
+                    <span class="right">&ge;</span>
+                </td>
+                <td>
+                    <div id="max_win" class="selector">
+                        <div class="value">
+                            <input type="text" maxlength="6" data-max_value="10000">
+                        </div>
+                        <div class="minus_btn btn">
+                            <span>-</span>
+                        </div>
+                        <div class="plus_btn btn">
+                            <span>+</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="custom checkbox">
+                        <input type="checkbox" name="stop_on_max_balance">
+                        <span></span>
+                    </label>
+                </td>
+                <td>
+                    <span data-lang_id="stopWhenBalance"></span>
+                    <span class="right">&ge;</span>
+                </td>
+                <td>
+                    <div id="max_balance" class="selector">
+                        <div class="value">
+                            <input type="text" maxlength="6" data-max_value="10000">
+                        </div>
+                        <div class="minus_btn btn">
+                            <span>-</span>
+                        </div>
+                        <div class="plus_btn btn">
+                            <span>+</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="custom checkbox">
+                        <input type="checkbox" name="stop_on_min_balance">
+                        <span></span>
+                    </label>
+                </td>
+                <td>
+                    <span data-lang_id="stopWhenBalance"></span>
+                    <span class="right">&le;</span>
+                </td>
+                <td>
+                    <div id="min_balance" class="selector">
+                        <div class="value">
+                            <input type="text" maxlength="6" data-max_value="10000">
+                        </div>
+                        <div class="minus_btn btn">
+                            <span>-</span>
+                        </div>
+                        <div class="plus_btn btn">
+                            <span>+</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="btn_panel">
+            <div class="start_btn btn ">
+                <div data-lang_id="start"></div>
+            </div>
+            <div class="cancel_btn btn exit_btn ">
+                <div data-lang_id="cancel"></div>
+            </div>
+        </div>
+        <div class="close_btn btn exit_btn ">
+            <span>X</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

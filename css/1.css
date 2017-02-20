@@ -1,0 +1,671 @@
+.btn, .selector .value {
+    text-align: center;
+    color: #fff
+}
+
+.btn_block, .selector .value {
+    text-shadow: 0 0 5px #000, 0 0 5px #000
+}
+
+body, input {
+    font-family: Decor6Di, sans-serif
+}
+
+body {
+    background: #fff
+}
+
+#container {
+    overflow: visible;
+    background: url(../images/main_bg.jpg) no-repeat
+}
+
+#side_menu #content > * {
+    margin: 40px auto
+}
+
+.selector {
+    position: relative
+}
+
+.selector .value {
+    margin: 20px auto 0;
+    width: 247px;
+    height: 76px;
+    background: url(../images/assets.png) 0 -196px no-repeat;
+    font-size: 54px;
+    line-height: 74px
+}
+
+.btn {
+    background: url(../images/assets.png) no-repeat;
+    text-transform: uppercase;
+    font-size: 46px
+}
+
+.btn > div {
+    height: 86px;
+    line-height: 92px
+}
+
+.btn_block {
+    margin-top: 40px;
+    margin-bottom: 130px;
+    width: 344px
+}
+
+.btn.minus_btn, .btn.plus_btn {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    z-index: 3;
+    width: 93px;
+    height: 86px;
+    background: url(../images/assets.png) 0 -274px no-repeat;
+    box-shadow: none;
+    opacity: 1 !important
+}
+
+.btn.plus_btn {
+    right: 0;
+    left: auto;
+    background-position: -95px -274px
+}
+
+.selector .btn.minus_btn[disabled] ~ .value {
+    opacity: .5
+}
+
+.btn.minus_btn[disabled]::after, .btn.plus_btn[disabled]::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: ""
+}
+
+.btn.minus_btn[disabled]::after {
+    background: url(../images/assets.png) -190px -274px no-repeat
+}
+
+.btn.plus_btn[disabled]::after {
+    background: url(../images/assets.png) -285px -274px no-repeat
+}
+
+#skip_btn, #spin_btn {
+    background-position: 0 -88px;
+    color: #fff;
+    font-size: 76px
+}
+
+#skip_btn > div, #spin_btn > div {
+    height: 106px;
+    line-height: 112px
+}
+
+.symbol {
+    position: absolute;
+    width: 157px;
+    height: 157px;
+    border: 6px solid #00f5fd;
+    background: url(../images/reel_symbols.png)
+}
+
+.symbol_7 {
+    background-position: 0 -942px
+}
+
+.symbol_6 {
+    background-position: 0 -785px
+}
+
+.symbol_5 {
+    background-position: 0 -628px
+}
+
+.symbol_4 {
+    background-position: 0 -471px
+}
+
+.symbol_3 {
+    background-position: 0 -314px
+}
+
+.symbol_2 {
+    background-position: 0 -157px
+}
+
+#paytable {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 374px;
+    height: 666px;
+    font-size: 32px
+}
+
+#paytable .row {
+    position: relative;
+    margin: 5px 0;
+    width: 100%;
+    height: 62px;
+    text-align: right
+}
+
+#paytable .row .symbol {
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    transition: all .3s ease;
+    -webkit-transform: scale(.35);
+    -moz-transform: scale(.35);
+    transform: scale(.35);
+    top: -53px;
+    left: -37px
+}
+
+.no-anim #paytable .row .symbol {
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none
+}
+
+#paytable .row .symbol + .symbol {
+    left: 36px
+}
+
+#paytable .row .symbol + .symbol + .symbol {
+    left: 109px
+}
+
+#paytable .row.blinking .symbol {
+    border: 6px solid #fff;
+    -webkit-box-shadow: inset 0 0 100px 5px rgba(255, 255, 255, 1);
+    -moz-box-shadow: inset 0 0 100px 5px rgba(255, 255, 255, 1);
+    box-shadow: inset 0 0 100px 5px rgba(255, 255, 255, 1)
+}
+
+#paytable .row .factor, #paytable .row .jackpot {
+    display: inline-block;
+    margin: 7px 10px;
+    padding: 0;
+    width: 114px;
+    height: 49px;
+    background: url(../images/assets.png) -249px -196px no-repeat;
+    color: #0ff;
+    text-align: center;
+    text-shadow: 0 0 5px #000, 0 0 5px #000;
+    font-size: 49px
+}
+
+#paytable .row .jackpot {
+    display: none;
+    padding: 7px 0;
+    height: 49px;
+    font-size: 32px
+}
+
+#paytable .row .factor span, #paytable .row .jackpot span {
+    display: inline-block;
+    width: 100%;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    transition: all .3s ease
+}
+
+.no-anim #paytable .row .factor span, .no-anim #paytable .row .jackpot span {
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none
+}
+
+#paytable .row.blinking .factor span, #paytable .row.blinking .jackpot span {
+    color: #fff;
+    text-shadow: 0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red
+}
+
+#paytable .row.row_8 .any {
+    display: inline-block;
+    width: 215px;
+    color: #00df00;
+    text-align: center;
+    text-shadow: 0 0 5px #000, 0 0 5px #000;
+    font-size: 48px;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    transition: all .3s ease
+}
+
+.no-anim #paytable .row.row_8 .any {
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none
+}
+
+#paytable .row.blinking .any {
+    color: #fff;
+    text-shadow: 0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red
+}
+
+#paytable .row .emerald {
+    display: inline-block;
+    width: 51px;
+    height: 48px;
+    background: url(../images/assets.png) -365px -196px no-repeat;
+    vertical-align: bottom
+}
+
+#paytable .row.row_10, #paytable .row.row_9 {
+    color: #0ff;
+    text-shadow: 0 0 5px #000, 0 0 5px #000;
+    font-size: 42px
+}
+
+#paytable .row.row_10 > span, #paytable .row.row_9 > span {
+    padding: 0 24px;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    transition: all .3s ease
+}
+
+.no-anim #paytable .row.row_10 > span, .no-anim #paytable .row.row_9 > span {
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none
+}
+
+#paytable .row.row_10 .symbol, #paytable .row.row_9 .symbol {
+    top: -58px;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    transition: all .3s ease;
+    -webkit-transform: scale(.25) rotate(25deg);
+    -moz-transform: scale(.25) rotate(25deg);
+    transform: scale(.25) rotate(25deg)
+}
+
+.no-anim #paytable .row.row_10 .symbol, .no-anim #paytable .row.row_9 .symbol {
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none
+}
+
+#paytable .row.row_10.blinking .symbol, #paytable .row.row_9.blinking .symbol {
+    border: 6px solid #fff
+}
+
+#paytable .row.row_10.blinking > span, #paytable .row.row_9.blinking > span {
+    color: #fff;
+    text-shadow: 0 0 5px red, 0 0 5px red, 0 0 5px red, 0 0 5px red
+}
+
+#paytable .row.row_9 .symbol {
+    left: -25px
+}
+
+#paytable .row.row_10 .symbol + .symbol {
+    left: -14px
+}
+
+#gestures_area, .main_canvas {
+    position: absolute;
+    top: 98px;
+    left: 427px;
+    width: 545px;
+    height: 491px
+}
+
+#line_anim {
+    position: absolute;
+    top: 235px;
+    left: 397px;
+    display: none;
+    width: 609px;
+    height: 221px;
+    background: url(../images/main_line.png) no-repeat
+}
+
+#line_anim.blinking {
+    display: block
+}
+
+.pointers {
+    position: absolute;
+    top: 98px;
+    left: 390px;
+    width: 619px;
+    height: 491px
+}
+
+.pointers .left, .pointers .right {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -37px;
+    width: 63px;
+    height: 74px;
+    background: url(../images/assets.png) -418px -196px no-repeat
+}
+
+.pointers .right {
+    right: 0;
+    left: auto;
+    background-position: -483px -196px
+}
+
+#autoplay_tables {
+    position: absolute;
+    top: 85px;
+    left: 427px;
+    display: none;
+    width: 545px;
+    height: 517px
+}
+
+#autoplay_tables > div {
+    position: absolute;
+    left: 50%;
+    margin-left: -115px;
+    padding: 5px 0;
+    width: 230px;
+    border: 4px solid #fae189;
+    border-radius: 10px;
+    background: linear-gradient(left, #d78800, #fae189 45%, #fae189 55%, #d78800);
+    background: -moz-linear-gradient(left, #d78800, #fae189 45%, #fae189 55%, #d78800);
+    background: -webkit-linear-gradient(left, #d78800, #fae189 45%, #fae189 55%, #d78800);
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 1px 2px 3px #741b00;
+    font-size: 32px
+}
+
+#autoplay_tables > #autopt_t {
+    top: 0
+}
+
+#autoplay_tables > #autopt_b {
+    bottom: 0
+}
+
+#autoplay_tables > div .value {
+    display: inline-block;
+    min-width: 50px
+}
+
+.autoplay_window.main, .autoplay_window.overlay {
+    display: none
+}
+
+.autoplay_window.overlay {
+    z-index: 4;
+    background: rgba(0, 0, 0, .7)
+}
+
+#autoplay_window {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 4;
+    margin-left: -612px;
+    padding: 0 120px;
+    width: 1224px;
+    height: 672px;
+    background: url(../images/window_bg.png) no-repeat;
+    color: #674322;
+    text-shadow: 1px 1px 2px #201b14;
+    font-size: 54px
+}
+
+#autoplay_window .autoplay_title {
+    display: block;
+    margin: 10px auto;
+    width: 379px;
+    color: #ffe5ba;
+    text-align: center;
+    font-size: 74px
+}
+
+#autoplay_window table {
+    width: 100%
+}
+
+#autoplay_window td {
+    position: relative;
+    height: 76px;
+    vertical-align: middle
+}
+
+#autoplay_window table td:first-child {
+    width: 100px
+}
+
+#autoplay_window table td:last-child {
+    width: 310px
+}
+
+#autoplay_window td .sign {
+    display: inline-block;
+    float: right;
+    padding-top: 0;
+    padding-right: 24px;
+    font-weight: 700;
+    font-size: 62px;
+    line-height: 35px
+}
+
+#autoplay_window .selector {
+    position: relative;
+    width: 310px
+}
+
+#autoplay_window .selector .value {
+    margin: 0 auto;
+    width: 220px;
+    height: 50px;
+    background: url(../images/assets.png) 15px 1px no-repeat;
+    background-size: 400px 254px;
+    line-height: 48px
+}
+
+#autoplay_window .selector .value input {
+    width: 100%;
+    background: 0 0;
+    color: #fff;
+    text-align: center;
+    font: 48px Decor6Di, sans-serif
+}
+
+#autoplay_window .selector .btn {
+    top: -17px;
+    -webkit-transform: scale(.7);
+    -moz-transform: scale(.7);
+    transform: scale(.7)
+}
+
+#autoplay_window .selector .btn.minus_btn {
+    left: 16px
+}
+
+#autoplay_window .selector .btn.plus_btn {
+    right: 16px;
+    left: auto
+}
+
+#autoplay_window td label.checkbox {
+    display: block;
+    margin-top: -10px;
+    height: 61px
+}
+
+#autoplay_window input[type=checkbox], #autoplay_window input[type=radio] {
+    display: none
+}
+
+#autoplay_window input[type=checkbox] + span, #autoplay_window input[type=radio] + span {
+    position: relative;
+    display: block;
+    margin: -15px 0 0;
+    width: 69px;
+    height: 77px;
+    background: url(../images/assets.png) no-repeat
+}
+
+#autoplay_window input[type=radio] + span {
+    background-position: -72px -362px
+}
+
+#autoplay_window input[type=checkbox] + span {
+    width: 78px;
+    height: 83px;
+    background-position: -223px -362px
+}
+
+#autoplay_window input[type=radio]:checked + span {
+    background-position: -1px -362px
+}
+
+#autoplay_window input[type=checkbox]:checked + span {
+    background-position: -143px -362px
+}
+
+#autoplay_window > [class$="_btn"] {
+    position: absolute;
+    text-decoration: none
+}
+
+#autoplay_window > [class$="_btn"] > span {
+    display: block;
+    padding-top: 15px;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px #000;
+    font-size: 34px
+}
+
+#autoplay_window > .cancel_btn {
+    top: 470px;
+    left: 556px
+}
+
+#autoplay_window .btn_panel {
+    margin-top: 38px;
+    text-align: center
+}
+
+#autoplay_window .btn_panel .btn {
+    display: inline-block;
+    width: 292px;
+    height: 87px;
+    background-position: -346px 0;
+    font-size: 42px
+}
+
+#autoplay_window .btn_panel .btn.cancel_btn {
+    background-position: -346px -89px
+}
+
+#autoplay_window .btn_panel .btn + .btn {
+    margin-left: 150px
+}
+
+#autoplay_window > .close_btn {
+    top: 0;
+    left: 1138px;
+    width: 67px;
+    height: 66px;
+    background: url(../images/assets.png) -302px -362px no-repeat
+}
+
+#autoplay_window .btn > div {
+    height: 86px;
+    font-size: 64px;
+    line-height: 92px
+}
+
+#jackpot {
+    position: absolute;
+    top: 608px;
+    left: 403px;
+    padding: 6px;
+    width: 575px;
+    border: 3px solid #a9834a;
+    background: #000;
+    color: #fff;
+    font-size: 48px
+}
+
+#jackpot .activate_text, #jackpot .text, #jackpot .win_text {
+    text-align: center
+}
+
+#jackpot .activate_text, #jackpot .win_text, #jackpot.activate .text {
+    display: none
+}
+
+#jackpot .money {
+    display: inline-block;
+    min-width: 140px;
+    text-align: center
+}
+
+#jackpot.in {
+    color: #e68010
+}
+
+#jackpot.in span.money {
+    color: #ffef9d
+}
+
+#jackpot.activate .activate_text {
+    display: block;
+    -webkit-animation: blink .5s infinite linear;
+    -moz-animation: blink .5s infinite linear;
+    animation: blink .5s infinite linear
+}
+
+#jackpot.win .activate_text, #jackpot.win .text {
+    display: none
+}
+
+#jackpot.win .win_text {
+    display: block;
+    -webkit-animation: blink .5s infinite linear;
+    -moz-animation: blink .5s infinite linear;
+    animation: blink .5s infinite linear
+}
+
+.no-anim #jackpot.activate .activate_text, .no-anim #jackpot.win .win_text {
+    color: #e68010;
+    -webkit-animation: none;
+    -moz-animation: none;
+    animation: none
+}
+
+@-webkit-keyframes blink {
+    49.99% {
+        color: #fff
+    }
+    100%, 50% {
+        color: #e68010
+    }
+}
+
+@-moz-keyframes blink {
+    49.99% {
+        color: #fff
+    }
+    100%, 50% {
+        color: #e68010
+    }
+}
+
+@keyframes blink {
+    49.99% {
+        color: #fff
+    }
+    100%, 50% {
+        color: #e68010
+    }
+}

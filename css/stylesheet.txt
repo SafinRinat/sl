@@ -1,0 +1,113 @@
+.sprite {
+    background-image: url(spritesheet.png);
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.sprite-10 {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -5px;
+}
+
+.sprite-10_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -143px;
+}
+
+.sprite-A {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -281px;
+}
+
+.sprite-A_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -419px;
+}
+
+.sprite-Castle {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -557px;
+}
+
+.sprite-Castle_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -695px;
+}
+
+.sprite-J {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -833px;
+}
+
+.sprite-J_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -971px;
+}
+
+.sprite-K {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1109px;
+}
+
+.sprite-K_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1247px;
+}
+
+.sprite-Money {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1385px;
+}
+
+.sprite-Money_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1523px;
+}
+
+.sprite-Princ {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1661px;
+}
+
+.sprite-Princ_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1799px;
+}
+
+.sprite-Princess {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -1937px;
+}
+
+.sprite-Princess_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -2075px;
+}
+
+.sprite-Q {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -2213px;
+}
+
+.sprite-Q_win {
+    width: 128px;
+    height: 128px;
+    background-position: -5px -2351px;
+}

@@ -10,79 +10,93 @@
     <meta name="description" content="Игра Слот-Автомат">
     <meta http-equiv="content-language" content="ru" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link href="css/style.css?v-1" media="screen" rel="stylesheet" type="text/css" >
+    <link href="css/style.css?v-2" media="screen" rel="stylesheet" type="text/css" >
 </head>
 <body>
-<div id="app">
-    <!--<img src="img/image.jpg" alt="">-->
+<div id="app" class="page">
     <div id="container">
-        <div class="slotArea">
+        <div class="slot-area">
 
             <canvas id='slot'>Обновите Ваш браузер браузер</canvas><!--END canvas#slot -->
 
-            <div class="slotArea__playerBalance playerBalance">
-                <div class="playerBalance__title">
-                    Баланс
+            <div id="lines_btn_container">
+                <div class="left_panel">
+                    <div class="line_btn line_btn_1 selected" data-line="1">1</div>
+                    <div class="line_btn line_btn_2 selected" data-line="2">2</div>
+                    <div class="line_btn line_btn_3 selected" data-line="3">3</div>
+                    <div class="line_btn line_btn_4 selected" data-line="4">4</div>
+                    <div class="line_btn line_btn_5 selected" data-line="5">5</div>
                 </div>
-                <div class="playerBalance__currentSumm">
-                    0.00
+                <div class="right_panel">
+                    <div class="line_btn line_btn_6 selected" data-line="6">6</div>
+                    <div class="line_btn line_btn_7 selected" data-line="7">7</div>
+                    <div class="line_btn line_btn_8 selected" data-line="8">8</div>
+                    <div class="line_btn line_btn_9 selected" data-line="9">9</div>
+                    <div class="line_btn line_btn_10 selected" data-line="10">10</div>
                 </div>
             </div>
 
-            <div class="slotArea__winBalance winBalance">
-               <div class="winBalance__title">
-                   Выигрышь
-               </div>
-               <div class="winBalance__summ">
-                   0.00
-               </div>
-           </div>
-
-            <div class="slotArea__controls controls">
-
-                <div class="contorls__lines lines">
-                    <div class="lines__title">
-                        Линии
+            <div class="flex-container">
+                <div class="player-balance">
+                    <div class="player-balance__title title">
+                        Баланс:
                     </div>
-                    <div class="lines__addLine">
-                        <span>
-                            +
+                    <div class="player-balance__currentSumm">
+                        0.00
+                    </div>
+                </div>
+
+                <div class="win-balance">
+                    <div class="win-balance__title title">
+                        Выигрышь:
+                    </div>
+                    <div class="win-balance__summ">
+                        0.00
+                    </div>
+                </div>
+
+                <div class="flex-container controls">
+
+                    <div class="controls__lines lines">
+                        <div class="lines__title">
+                            Линии
+                        </div>
+                        <div class="lines__result btn">
+                            <span></span>
+                        </div>
+                        <span class="lines__remove-line">
+                            1
                         </span>
-                    </div>
-                    <div class="lines__result">
-                        <span>
-                            -
-                        </span>
-                    </div>
-                    <div class="lines__removeLine">
-                        1
-                    </div>
-                </div><!--END .lines -->
+                        <div class="lines__add-line btn plus_btn">
+                           <span></span>
+                           <span></span>
+                        </div>
+                    </div><!-- END /.lines -->
 
-                <div class="contorls__bets bets">
-                    <div class="bets__title">
-                        Ставка
-                    </div>
-                    <div class="bets__addBet">
-                        <span>
-                            +
-                        </span>
-                    </div>
-                    <div class="bets__removeBet">
-                        <span>
-                            -
-                        </span>
-                    </div>
-                    <div class="bets__result">
-                        0.20
-                    </div>
-                </div><!--END .bets -->
+                    <div class="controls__bets bets">
+                        <div class="bets__title">
+                            Ставка
+                        </div>
+                        <div class="bets__remove-bet btn">
+                           <span></span>
+                        </div>
 
-                <div class="contorls__startGame">
-                    <input type="button" id="start" value="Играть">
-                </div><!--END .startGame -->
+                        <span class="bets__result">
+                            0.00
+                        </span>
 
-            </div><!--END .controls -->
+                        <div class="bets__add-bet btn plus_btn">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div><!-- END /.bets -->
+
+                    <div class="contorls__start-game start-game">
+                        <input class="btn-green" type="button" id="start" value="Играть">
+                    </div><!-- END /.startGame -->
+
+                </div><!-- END /.controls -->
+            </div>
 
         </div>
     </div>

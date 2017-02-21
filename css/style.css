@@ -85,7 +85,7 @@ body {
 .slot-area {
     width: 854px;
     background: #ffffff;
-    padding: 20px 80px;
+    padding: 38px 80px;
     border-radius: 4px;
     box-shadow: 0 2px 46px rgba(0,0,0,.07);
     position: relative;
@@ -217,34 +217,29 @@ body {
     color: #fff;
 }
 
-.line_btn.selected:nth-child(1),
-.line_btn.selected:nth-child(6) {
-    background-color: #69c623;
-}
-
-.line_btn.selected:nth-child(2),
-.line_btn.selected:nth-child(7) {
+.line_btn.selected:nth-child(1) {
     background-color: #ff0;
 }
 
-.line_btn.selected:nth-child(3),
-.line_btn.selected:nth-child(8){
+.line_btn.selected:nth-child(2) {
     background-color: #f93;
 }
 
-.line_btn.selected:nth-child(4),
-.line_btn.selected:nth-child(9) {
+.line_btn.selected:nth-child(3) {
+    background-color: #69c623;
+}
+
+.line_btn.selected:nth-child(4) {
     background-color: #63b4ff;
 }
-.line_btn.selected:nth-child(5),
-.line_btn.selected:nth-child(10) {
+.line_btn.selected:nth-child(5) {
     background-color: #ff7af0;
 }
 
 .line_btn {
     position: relative;
     overflow: hidden;
-    margin-bottom: 22px;
+    margin-bottom: 0;
     padding-top: 18px;
     padding-left: 1px;
     height: 60px;
@@ -255,4 +250,12 @@ body {
     text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 3px 0 0 #000, 0 3px 0 #000, -3px 0 0 #000, 0 -3px 0 #000;
     letter-spacing: 2px;
     font-size: 40px;
+}
+
+.line_btn.line_btn_1.selected {
+    margin-bottom: 88px;
+}
+
+.line_btn.line_btn_2.selected {
+    margin-bottom: 82px;
 }

@@ -16,19 +16,19 @@ canvas.height = SYMBOL_HEIGHT * ROWS_COUNT;
 var context = canvas.getContext("2d");
 // кол-во символов в ленте
 var SYMBOLS_COUNT = [
-    4,//10 [0]
-    1,//A [1]
-    7,//6 [2]
-    3,//J [3]
-    2,//K [4]
-    4,//9 [5]
-    6,//7 [6]
-    5,//8 [7]
-    3//Q [8]
+    7, // 6
+    6, // 7
+    5, // 8
+    4, // 9
+    4, // 10
+    3, // J
+    3, // Q
+    2, // K
+    1 // A
 ];
 //спрайт или путь к спрайту с картинами канваса
 var symbolsSprite = [
-    "./images/sprites.png"
+    "./images/sprites.jpg"
 ];
 // линии, по которым проверять выигрыш
 var PAY_LINES = [
@@ -276,7 +276,7 @@ function spin() {
             context.drawImage(
                 symbolsSprite, // картинка с символами
                 0, // расположение символа на спрайте по оси x
-                randomSymbols[x][y] * (SYMBOL_HEIGHT + 138), // расположение символа на спрайте по оси y
+                randomSymbols[x][y] * (SYMBOL_HEIGHT), // расположение символа на спрайте по оси y
                 SYMBOL_WIDTH, // ширина вырезаемого куска со спрайта
                 SYMBOL_HEIGHT, // высота вырезаемого куска со спрайта
                 x * SYMBOL_WIDTH, // отступ на канвасе слева (по x)

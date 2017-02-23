@@ -32,12 +32,35 @@ var symbolsSprite = [
 ];
 // линии, по которым проверять выигрыш
 var PAY_LINES = [
-    [1, 1, 1, 1, 1], // индекс символов на барабане
-    [0, 0, 0, 0, 0],
-    [2, 2, 2, 2, 2],
-    [0, 1, 2, 1, 0],
+    [1, 1, 1, 1, 1], // 1 индекс символов на барабане
+    [0, 0, 0, 0, 0],// 2 индекс
+    [2, 2, 2, 2, 2],// 3 индекс
+    [0, 1, 2, 1, 0],//
     [2, 1, 0, 1, 2]
 ];
+
+// Линии:
+//
+//1.
+//     [-][-][-][-][-]
+//     [ ][ ][ ][ ][ ]
+//     [ ][ ][ ][ ][ ]
+// 2.
+//     [ ][ ][ ][ ][ ]
+//     [-][-][-][-][-]
+//     [ ][ ][ ][ ][ ]
+// 3.
+//     [ ][ ][ ][ ][ ]
+//     [ ][ ][ ][ ][ ]
+//     [-][-][-][-][-]
+// 4.
+//     [-][-][ ][ ][ ]
+//     [ ][ ][-][ ][ ]
+//     [ ][ ][ ][-][-]
+// 5.
+//     [ ][ ][ ][-][-]
+//     [ ][ ][-][ ][ ]
+//     [-][-][ ][ ][ ]
 // выигрышные комбинации
 var WIN_COMB = [
     // для первого символа, то есть 6
@@ -75,7 +98,8 @@ var WIN_COMB = [
     ]
 ];
 var money = 10000; // деньги игрока
-var bet = 2; // ставка
+var bet = [0.2, 0.5, 1.0, 2.5, 5]; // ставка
+
 var active_lines_count = 5; // кол-во активных линий, т.е. по которым играет игрок
 
 // лента слота, из которой будут браться случайные символы
@@ -86,23 +110,52 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
+
+// создаем пустой массив и проверяем поддерживается ли indexOf
+var find;
+if ([].indexOf) {
+
+    find = function(array, value) {
+        return array.indexOf(value);
+    }
+
+} else {
+    find = function(array, value) {
+        for (var i = 0; i < array.length; i++) {
+            if (array[i] === value) return i;
+        }
+
+        return -1;
+    }
+
+}
+// function getBet() {
+//     currrentBet = document.getElementById();
+// }
+
 // перемешивает массив
 function shuffleArray(arr) {
     var i = arr.length, j, x;
     for (; i; i--) {
         j = Math.floor(Math.random() * i);
         x = arr[i - 1];
+        console.log("arr ===== " + arr);
+        console.log("J === " + j);
+        console.log("//////////////////");
+        console.log("X ===" + x);
         arr[i - 1] = arr[j];
+        console.log("arr[i - 1] === arr[j] ===== " + arr);
         arr[j] = x;
     }
 }
+
 
 function fillReelSymbols() {
     // заполняем нашу виртуальную ленту символами
     // согласно их колличеству
     for (var i = 0; i < SYMBOLS_COUNT.length; i++) {
         for (var n = 0; n < SYMBOLS_COUNT[i]; n++) {
-            REEL_SYMBOLS.push(i)
+            REEL_SYMBOLS.push(i);
         }
     }
     shuffleArray(REEL_SYMBOLS);
@@ -265,7 +318,8 @@ function spin() {
     // получаем набор символов для спина
     var randomSymbols = getRandomSymbols();
     var winLines = checkWinLines(randomSymbols);
-
+    var playerBlance = document.getElementById('playerBalance');
+    var currentWin = document.getElementById('currentWin');
     // очищаем канвас
     context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -290,24 +344,28 @@ function spin() {
     // выигрыш
     var win = 0;
     // проверяем, есть ли деньги совершить ставку
-    if (money < bet * active_lines_count) {
+    if (money < bet[0] * active_lines_count) {
         return printText('Не хватает денег на совершение ставки')
     }
     // делаем ставку, отнимает ставку от баланса
-    money -= bet * active_lines_count;
+    money -= bet[0] * active_lines_count;
     printText('---');
     // проверяем, есть ли выигрышные линии
     if (winLines.length) {
         printText('  Выпали линии:');
         for (var i = 0; i < winLines.length; i++) {
-            win += bet * winLines[i].factor;
+            win += bet[0] * winLines[i].factor;
             printText('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +
                 '; кол-во символов: ' + winLines[i].count + '; коэфициент: ' + winLines[i].factor)
         }
     }
     // добавляем выигрыш к балансу
     money += win;
-    printText('Ставка: ' + bet + ' x ' + active_lines_count + ';\t Выигрыш: ' + win + ';\t' + 'Баланс: ' + money);
+
+    currentWin.innerHTML = win;
+    playerBlance.innerHTML = money;
+
+    printText('Ставка: ' + bet[0] + ' x ' + active_lines_count + ';\t Выигрыш: ' + win + ';\t' + 'Баланс: ' + money);
     // setTimeout(spin, 1000);
 }
 

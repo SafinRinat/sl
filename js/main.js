@@ -139,12 +139,7 @@ function shuffleArray(arr) {
     for (; i; i--) {
         j = Math.floor(Math.random() * i);
         x = arr[i - 1];
-        console.log("arr ===== " + arr);
-        console.log("J === " + j);
-        console.log("//////////////////");
-        console.log("X ===" + x);
         arr[i - 1] = arr[j];
-        console.log("arr[i - 1] === arr[j] ===== " + arr);
         arr[j] = x;
     }
 }
@@ -189,6 +184,16 @@ function getRandomSymbols() {
             // о дополняем его из начала ленты недостающими символами
             reel = reel.concat(REEL_SYMBOLS.slice(0, ROWS_COUNT - reel.length));
         }
+        // 0 => Gold(6)
+        // 1 => 10
+        // 2 => J
+        // 3 => Q
+        // 4 => K
+        // 5 => A
+        // 6 => Prince
+        // 7 => Princess
+        // 8 => Castle
+        // console.log(reel);
         symbols[i] = reel;
     }
     return symbols;
@@ -203,7 +208,6 @@ function checkWinLines(symbols) {
     // выберем линии, которые сейчас играют, по которым,
     // соответственно, будем искать выигрышь
     var active_lines = PAY_LINES.slice(0, active_lines_count);
-
     // для всех активных линий выбираем символы из барабанов
     for (var line = 0; line < active_lines.length; line ++) {
         // линия для проверки
@@ -211,7 +215,7 @@ function checkWinLines(symbols) {
         // для всех позиций проверяемой линии выбираем символы
         // из выпавших символов на барабанах
         for (var reel = 0; reel < active_lines[line].length; reel++) {
-            lines[line].push(symbols[reel][active_lines[line][reel]])
+            lines[line].push(symbols[reel][active_lines[line][reel]]);
         }
     }
 
@@ -219,7 +223,7 @@ function checkWinLines(symbols) {
     for (line = 0; line < lines.length; line++) {
         // берем первый символ проверяемой линии
         var first_symbol = lines[line][0];
-
+        console.log(lines[0]);
         // дальше проверяем, сколько раз он встречается подряд (lines[line][i] === first_symbol)
         // то есть мы начинаем проверять со второго символа в линии, равняется ли он первому
         // если да, идем дальше и увеличиваем число i на 1

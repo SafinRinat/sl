@@ -1,3 +1,12 @@
+//run game
+var startButton = document.getElementById('start');
+var select_lines = document.getElementById('set_lines');
+var select_bet = document.getElementById('set_bet');
+var remove_line = document.getElementById('remove_line');
+var add_line = document.getElementById('add_line');
+var reduce_stakes = document.getElementById('reduce_stakes');
+var raise_stakes = document.getElementById('raise_stakes');
+
 // кол-во барабанов
 var REELS_COUNT = 5;
 // кол-во линий
@@ -14,12 +23,23 @@ canvas.width = SYMBOL_WIDTH * REELS_COUNT;
 canvas.height = SYMBOL_HEIGHT * ROWS_COUNT;
 // получаем его контекст для рисования
 var context = canvas.getContext("2d");
+var STROKE_WIDTH = 6;
+var SYMBOL_MARGIN = 5;
+var ROUNDED_RECT_RADIUS = 8;
+context.lineWidth = STROKE_WIDTH;
+context.lineCap = "round";
+context.lineJoin = "round";
+context.shadowOffsetX = 2;
+context.shadowOffsetY = 2;
+context.shadowBlur = 5;
+context.shadowColor = 'rgba(0, 0, 0, 0.25)';
+
 // кол-во символов в ленте
 var SYMBOLS_COUNT = [
-    7, // 6
-    6, // 7
-    5, // 8
-    4, // 9
+    7, // 6 - Gold
+    6, // 7 - Princess
+    5, // 8 - Prince
+    4, // 9 - Castle
     4, // 10
     3, // J
     3, // Q
@@ -30,14 +50,63 @@ var SYMBOLS_COUNT = [
 var symbolsSprite = [
     "./images/sprites.jpg"
 ];
+
 // линии, по которым проверять выигрыш
 var PAY_LINES = [
     [1, 1, 1, 1, 1], // 1 индекс символов на барабане
     [0, 0, 0, 0, 0],// 2 индекс
     [2, 2, 2, 2, 2],// 3 индекс
-    [0, 1, 2, 1, 0],//
-    [2, 1, 0, 1, 2]
+    [0, 1, 2, 1, 0],//4
+    [2, 1, 0, 1, 2]//5
 ];
+
+var COLOR_LINES = [
+    "#f00",//line1
+    "#0f0",//line2
+    "#00f",//line3
+    "#ff0",//line4
+    "#0ff"//line5
+];
+
+var SELECT_LINES = [
+    //линия 1
+    { line: PAY_LINES[0], count: 0, color: COLOR_LINES[0] },
+    //линия 2
+    { line: PAY_LINES[1], count: 0, color: COLOR_LINES[1] },
+    //линия 3
+    { line: PAY_LINES[2], count: 0, color: COLOR_LINES[2] },
+    //линия 4
+    { line: PAY_LINES[3], count: 0, color: COLOR_LINES[3] },
+    //линия 5
+    { line: PAY_LINES[4], count: 0, color: COLOR_LINES[4] }
+];
+
+// var WIN_LINES = [
+//     { line: PAY_LINES[0], count: 2, color: "#f00" },
+//     { line: PAY_LINES[0], count: 3, color: "#f00" },
+//     { line: PAY_LINES[0], count: 4, color: "#f00" },
+//     { line: PAY_LINES[0], count: 5, color: "#f00" },
+//
+//     { line: PAY_LINES[1], count: 2, color: "#0f0" },
+//     { line: PAY_LINES[1], count: 3, color: "#0f0" },
+//     { line: PAY_LINES[1], count: 4, color: "#0f0" },
+//     { line: PAY_LINES[1], count: 5, color: "#0f0" },
+//
+//     { line: PAY_LINES[2], count: 2, color: "#00f" },
+//     { line: PAY_LINES[2], count: 3, color: "#00f" },
+//     { line: PAY_LINES[2], count: 4, color: "#00f" },
+//     { line: PAY_LINES[2], count: 5, color: "#00f" },
+//
+//     { line: PAY_LINES[3], count: 2, color: "#ff0" },
+//     { line: PAY_LINES[3], count: 3, color: "#ff0" },
+//     { line: PAY_LINES[3], count: 4, color: "#ff0" },
+//     { line: PAY_LINES[3], count: 5, color: "#ff0" },
+//
+//     { line: PAY_LINES[4], count: 2, color: "#0ff" },
+//     { line: PAY_LINES[4], count: 3, color: "#0ff" },
+//     { line: PAY_LINES[4], count: 4, color: "#0ff" },
+//     { line: PAY_LINES[4], count: 5, color: "#0ff" }
+// ];
 
 // Линии:
 //
@@ -61,45 +130,55 @@ var PAY_LINES = [
 //     [ ][ ][ ][-][-]
 //     [ ][ ][-][ ][ ]
 //     [-][-][ ][ ][ ]
+
 // выигрышные комбинации
 var WIN_COMB = [
-    // для первого символа, то есть 6
+    // для первого символа, то есть 6 (gold)
     [
         // первое число - колличество одинаковых символов подряд
         // второе - коэфициент выплат
-        [3, 5], // если три шестерки подряд - ставка x 5
-        [4, 10], // если четыре шестерки подряд - ставка x 10
-        [5, 20] // и т. д.
+        [2, 4],// если две подрят - ставка х 4
+        [3, 8],// если три шестерки подряд - ставка x 8
+        [4, 16],// если четыре шестерки подряд - ставка x 16
+        [5, 32] // и т. д.
     ],
-    // для второго символа, то есть 7 и т.д.
+    // для символа 10
     [
-        [3, 5], [4, 15], [5, 25]
+        [2, 12], [3, 24], [4, 48], [5, 96]
     ],
+    // для символа J
     [
-        [3, 5], [4, 15], [5, 25]
+        [2, 14], [3, 28], [4, 56], [5, 112]
     ],
+    // для символа Q
     [
-        [3, 10], [4, 25], [5, 50]
+        [2, 16], [3, 32], [4, 64], [5, 128]
     ],
+    // для второго символа K
     [
-        [3, 25], [4, 50], [5, 100]
+        [2, 18], [3, 36], [4, 72], [5, 144]
     ],
+    // для символа A
     [
-        [2, 25], [3, 50], [4, 100], [5, 250]
+        [2, 20], [3, 40], [4, 80], [5, 160]
     ],
+    // для символа 7 - Prince
     [
-        [2, 25], [3, 50], [4, 100], [5, 500]
+        [2, 6], [3, 12], [4, 24], [5, 48]
     ],
+    // для символа 8 - Princess
     [
-        [2, 50], [3, 150], [4, 250], [5, 500]
+        [2, 8], [3, 16], [4, 32], [5, 64]
     ],
+    // для символа 9 - Castle
     [
-        [2, 50], [3, 250], [4, 500], [5, 1000]
+        [2, 10], [3, 20], [4, 40], [5, 80]
     ]
 ];
-var money = 10000; // деньги игрока
-var bet = [0.2, 0.5, 1.0, 2.5, 5]; // ставка
-
+var money = 500; // деньги игрока
+//TODO: сделать функцию, которая будет изменять значение стваки по клику.
+var CURRENT_BET = [0.2, 0.5, 1.0, 2.5, 5]; // ставка
+//TODO: сделать функцию которая будет изменять активные линии, при условии, что максимальное значение 5
 var active_lines_count = 5; // кол-во активных линий, т.е. по которым играет игрок
 
 // лента слота, из которой будут браться случайные символы
@@ -109,29 +188,6 @@ var REEL_SYMBOLS = [];
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
-
-
-// создаем пустой массив и проверяем поддерживается ли indexOf
-var find;
-if ([].indexOf) {
-
-    find = function(array, value) {
-        return array.indexOf(value);
-    }
-
-} else {
-    find = function(array, value) {
-        for (var i = 0; i < array.length; i++) {
-            if (array[i] === value) return i;
-        }
-
-        return -1;
-    }
-
-}
-// function getBet() {
-//     currrentBet = document.getElementById();
-// }
 
 // перемешивает массив
 function shuffleArray(arr) {
@@ -143,7 +199,6 @@ function shuffleArray(arr) {
         arr[j] = x;
     }
 }
-
 
 function fillReelSymbols() {
     // заполняем нашу виртуальную ленту символами
@@ -190,10 +245,10 @@ function getRandomSymbols() {
         // 3 => Q
         // 4 => K
         // 5 => A
-        // 6 => Prince
+        // 6 => Prince (хотел на оборот, 6 принцесса, 7 принц)
         // 7 => Princess
         // 8 => Castle
-        // console.log(reel);
+
         symbols[i] = reel;
     }
     return symbols;
@@ -208,6 +263,8 @@ function checkWinLines(symbols) {
     // выберем линии, которые сейчас играют, по которым,
     // соответственно, будем искать выигрышь
     var active_lines = PAY_LINES.slice(0, active_lines_count);
+    //цвет выигрышных линий
+    var check_color_lines = [];
     // для всех активных линий выбираем символы из барабанов
     for (var line = 0; line < active_lines.length; line ++) {
         // линия для проверки
@@ -218,31 +275,36 @@ function checkWinLines(symbols) {
             lines[line].push(symbols[reel][active_lines[line][reel]]);
         }
     }
-
     // для всех активных (проверяемых) линий
     for (line = 0; line < lines.length; line++) {
         // берем первый символ проверяемой линии
         var first_symbol = lines[line][0];
-        console.log(lines[0]);
         // дальше проверяем, сколько раз он встречается подряд (lines[line][i] === first_symbol)
         // то есть мы начинаем проверять со второго символа в линии, равняется ли он первому
         // если да, идем дальше и увеличиваем число i на 1
         // если нет, условие lines[line][i] === first_symbol не выполняется и
         // соответственно цикл прерывается
-        for (var i = 1; i < lines[line].length && lines[line][i] === first_symbol; i++) {}
+        // for (var i = 1; i < lines[line].length && lines[line][i] === first_symbol; i++) {}
 
+        var counter = 1;
+        while (lines[line][counter] === first_symbol) {
+            counter++;
+        }
         // дальше, берем коэфициенты символа (first_symbol),
         // проходимся по ним в цикле
+        //WIN_COMB[first_symbol].length - количество первых символов с каждой линии по 1, то есть 5 линий 5 первых символов
         for (var comb = 0; comb < WIN_COMB[first_symbol].length; comb++) {
-            // и прверяем, есть ли выигрышная комбинация для полученого кол-ва (i)
-            if (WIN_COMB[first_symbol][comb][0] === i) {
+            // и прверяем, есть ли выигрышная комбинация для полученого кол-ва (counter)
+            if (WIN_COMB[first_symbol][comb][0] === counter) {
+                check_color_lines.push(PAY_LINES.indexOf(active_lines[line]));
                 // если есть, записываем все нужные данные в объект
                 //  и добавляем его к результату
                 result.push({
                     symbol: first_symbol, // номер символа
-                    count: i, // сколько раз повторился
+                    count: counter, // сколько раз повторился
                     line: active_lines[line], // расположение линии
-                    factor: WIN_COMB[first_symbol][comb][1] // коэфициент
+                    multiplier: WIN_COMB[first_symbol][comb][1], // коэфициент
+                    lineColor: check_color_lines
                 })
             }
         }
@@ -259,7 +321,7 @@ function loadImages(imgSources, callback) {
     // итоговый массив загруженых картинок
     var result = [];
     // кол-во уже загруженых картинок
-    var loadedCount = 0;
+    var loaded_count = 0;
     // для каждого элемента из массива ссылок на картинки
     imgSources.forEach(function(path) {
         // создаем картинку в js
@@ -272,10 +334,10 @@ function loadImages(imgSources, callback) {
         // то есть, браузер ее взял из кеша
         if (image.complete || image.readyState == 4) {
             // если так, то увеличиваем счетчик на 1
-            loadedCount++;
+            loaded_count++;
             // если кол-во загруженых картинок равно длине
             // входного массива с ссылками
-            if (loadedCount === imgSources.length) {
+            if (loaded_count === imgSources.length) {
                 // можем вызывать callback, если он есть
                 if (callback) {
                     // а в него передаем массив с картинками
@@ -286,8 +348,8 @@ function loadImages(imgSources, callback) {
             // если картинка еще не загружена,
             // вешаем обработчик на загрузку картинки
             image.onload = function() {
-                loadedCount++;
-                if (loadedCount === imgSources.length) {
+                loaded_count++;
+                if (loaded_count === imgSources.length) {
                     if (callback) {
                         callback(result)
                     }
@@ -297,36 +359,65 @@ function loadImages(imgSources, callback) {
     })
 }
 
-function init(images) {
-    // в images хранятся загруженые картинки, по порядку
-    // первая и единственныя - это картинка с символами
-    symbolsSprite = images[0];
-
-    // заполняем нашу виртуальную ленту символами
-    // согласно их колличеству
-    for (var i = 0; i < SYMBOLS_COUNT.length; i++) {
-        for (var n = 0; n < SYMBOLS_COUNT[i]; n++) {
-            REEL_SYMBOLS.push(i);
-        }
-    }
-    // заполняем симвоалми барабан
-    fillReelSymbols();
-    // запучкаем спин
-    spin();
-
-    // и потом каждую секунду
-    // setInterval(spin, 1000);
+function roundedRect(x, y, width, height) {
+    context.beginPath();
+    context.moveTo(x, y + ROUNDED_RECT_RADIUS);
+    context.lineTo(x, y + height - ROUNDED_RECT_RADIUS);
+    context.arcTo(x, y + height, x + ROUNDED_RECT_RADIUS, y + height, ROUNDED_RECT_RADIUS);
+    context.lineTo(x + width - ROUNDED_RECT_RADIUS, y + height);
+    context.arcTo(x + width, y + height, x + width, y + height-ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+    context.lineTo(x + width, y + ROUNDED_RECT_RADIUS);
+    context.arcTo(x + width, y, x + width - ROUNDED_RECT_RADIUS, y, ROUNDED_RECT_RADIUS);
+    context.lineTo(x + ROUNDED_RECT_RADIUS, y);
+    context.arcTo(x, y, x, y + ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+    context.stroke();
 }
 
-function spin() {
+function drawWinLine(line, count, color) {
+    // context.clearRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = color;
+    context.beginPath();
+    context.moveTo(0, SYMBOL_HEIGHT * line[0] + SYMBOL_HEIGHT / 2);
+    for (var x = 0; x < line.length; x++) {
+        context.lineTo(
+            SYMBOL_WIDTH * x + SYMBOL_WIDTH / 2,
+            SYMBOL_HEIGHT * line[x] + SYMBOL_HEIGHT / 2
+        );
+    }
+    context.lineTo(
+        SYMBOL_WIDTH * line.length,
+        SYMBOL_HEIGHT * line[line.length - 1] + SYMBOL_HEIGHT / 2
+    );
+    context.stroke();
+    for (var i = 0; i < count; i++) {
+        //TODO: сделать отрисовку выигрышного символа и линий, но перед этим реализовать таймаут для отрисовки.
+        // context.clearRect(
+        //     SYMBOL_WIDTH * i + SYMBOL_MARGIN + STROKE_WIDTH,
+        //     line[i] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+        //     SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+        //     SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+        // );
+        roundedRect(
+            SYMBOL_WIDTH * i + SYMBOL_MARGIN + STROKE_WIDTH,
+            line[i] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+            SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+            SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+        )
+    }
+}
+
+function spin(clicked) {
+    if(typeof clicked === "boolean") {
+        var init_from_user = true;
+    }
+
     // получаем набор символов для спина
     var randomSymbols = getRandomSymbols();
     var winLines = checkWinLines(randomSymbols);
-    var playerBlance = document.getElementById('playerBalance');
-    var currentWin = document.getElementById('currentWin');
+    var player_blance = document.getElementById('player_balance');
+    var current_win = document.getElementById('current_win');
     // очищаем канвас
     context.clearRect(0, 0, canvas.width, canvas.height);
-
     // рисуем все символы из массива
     for (var x = 0; x < REELS_COUNT; x++) {
         for (var y = 0; y < ROWS_COUNT; y++) {
@@ -345,32 +436,69 @@ function spin() {
         }
     }
 
-    // выигрыш
-    var win = 0;
-    // проверяем, есть ли деньги совершить ставку
-    if (money < bet[0] * active_lines_count) {
-        return printText('Не хватает денег на совершение ставки')
+    if (init_from_user) {
+        // выигрыш
+        var win = 0;
+        // проверяем, есть ли деньги совершить ставку
+        if (money < CURRENT_BET[0] * active_lines_count) {
+            return printText('Не хватает денег на совершение ставки')
+        }
+        // делаем ставку, отнимает ставку от баланса
+        money -= CURRENT_BET[0] * active_lines_count;
+        printText('---');
+        // проверяем, есть ли выигрышные линии
+        if (winLines.length) {
+            printText('  Выпали линии:');
+            for (var i = 0; i < winLines.length; i++) {
+                drawWinLine(
+                    winLines[i].line,
+                    winLines[i].count,
+                    COLOR_LINES[winLines[i].lineColor[i]]
+                );
+
+                win += CURRENT_BET[0] * winLines[i].multiplier;
+
+                printText('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +
+                    '; кол-во символов: ' + winLines[i].count + '; коэфициент: ' + winLines[i].multiplier)
+            }
+        }
+        // win = win.toFixed(2);
+        // добавляем выигрыш к балансу
+        money += win;
+        current_win.innerHTML = win.toFixed(2);
+        printText('Ставка: ' + CURRENT_BET[0] + ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money);
+        //autogame
+        // setTimeout(spin(true), 1000);
     }
-    // делаем ставку, отнимает ставку от баланса
-    money -= bet[0] * active_lines_count;
-    printText('---');
-    // проверяем, есть ли выигрышные линии
-    if (winLines.length) {
-        printText('  Выпали линии:');
-        for (var i = 0; i < winLines.length; i++) {
-            win += bet[0] * winLines[i].factor;
-            printText('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +
-                '; кол-во символов: ' + winLines[i].count + '; коэфициент: ' + winLines[i].factor)
+
+    player_blance.innerHTML = money.toFixed(2);
+}
+
+function init(images) {
+    // в images хранятся загруженые картинки, по порядку
+    // первая и единственныя - это картинка с символами
+    symbolsSprite = images[0];
+    // заполняем нашу виртуальную ленту символами
+    // согласно их колличеству
+    for (var i = 0; i < SYMBOLS_COUNT.length; i++) {
+        for (var n = 0; n < SYMBOLS_COUNT[i]; n++) {
+            REEL_SYMBOLS.push(i);
         }
     }
-    // добавляем выигрыш к балансу
-    money += win;
+    // заполняем симвоалми барабан
+    fillReelSymbols();
+    // запучкаем спин
+    spin();
 
-    currentWin.innerHTML = win;
-    playerBlance.innerHTML = money;
+    startButton.addEventListener("click", function () {
+        // заполняем симвоалми барабан
+        fillReelSymbols();
+        // запучкаем спин
+        spin(true);
+    });
 
-    printText('Ставка: ' + bet[0] + ' x ' + active_lines_count + ';\t Выигрыш: ' + win + ';\t' + 'Баланс: ' + money);
-    // setTimeout(spin, 1000);
+    // и потом каждую секунду
+    // setInterval(spin, 1000);
 }
 
 // сначала загружаем все нужные картинки

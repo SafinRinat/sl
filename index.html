@@ -17,7 +17,7 @@
     <div id="container">
         <div class="slot-area">
 
-            <canvas id='slot'>Обновите Ваш браузер браузер</canvas><!--END canvas#slot -->
+            <canvas id='slot'>Your browser does not support the HTML5 canvas tag.</canvas><!--END canvas#slot -->
 
             <div id="lines_btn_container">
                 <div class="left_panel">
@@ -41,7 +41,7 @@
                     <div class="player-balance__title title">
                         Баланс:
                     </div>
-                    <div class="player-balance__currentSumm" id="playerBalance">
+                    <div class="player-balance__currentSumm" id="player_balance">
                         0.00
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <div class="win-balance__title title">
                         Выигрышь:
                     </div>
-                    <div class="win-balance__summ" id="currentWin">
+                    <div class="win-balance__summ" id="current_win">
                         0.00
                     </div>
                 </div>
@@ -61,13 +61,13 @@
                         <div class="lines__title">
                             Линии
                         </div>
-                        <div class="lines__result btn">
+                        <div class="lines__result btn" id="remove_line">
                             <span></span>
                         </div>
-                        <span class="lines__remove-line">
+                        <span class="lines__remove-line" id="set_lines">
                             1
                         </span>
-                        <div class="lines__add-line btn plus_btn">
+                        <div class="lines__add-line btn plus_btn" id="add_line">
                            <span></span>
                            <span></span>
                         </div>
@@ -77,15 +77,15 @@
                         <div class="bets__title">
                             Ставка
                         </div>
-                        <div class="bets__remove-bet btn">
+                        <div class="bets__remove-bet btn" id="reduce_stakes">
                            <span></span>
                         </div>
 
-                        <span class="bets__result">
+                        <span class="bets__result" id="set_bet">
                             0.00
                         </span>
 
-                        <div class="bets__add-bet btn plus_btn">
+                        <div class="bets__add-bet btn plus_btn" id="raise_stakes">
                             <span></span>
                             <span></span>
                         </div>

@@ -90,9 +90,15 @@ body {
     box-shadow: 0 2px 46px rgba(0,0,0,.07);
     position: relative;
 }
-
 #slot {
     border: 2px groove darkturquoise;
+}
+
+#lines {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 
 .controls {

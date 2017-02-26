@@ -12,6 +12,7 @@ var REELS_COUNT = 5;
 var ROWS_COUNT = 3;
 // ссылка на canvas
 var canvas = document.getElementById("slot");
+var lines = document.getElementById("lines");
 // ширина символа
 var SYMBOL_WIDTH = 138;
 // высота символа
@@ -22,16 +23,19 @@ canvas.width = SYMBOL_WIDTH * REELS_COUNT;
 canvas.height = SYMBOL_HEIGHT * ROWS_COUNT;
 // получаем его контекст для рисования
 var context = canvas.getContext("2d");
+var contextLines = lines.getContext("2d");
+
 var STROKE_WIDTH = 6;
 var SYMBOL_MARGIN = 5;
 var ROUNDED_RECT_RADIUS = 8;
-context.lineWidth = STROKE_WIDTH;
-context.lineCap = "round";
-context.lineJoin = "round";
-context.shadowOffsetX = 2;
-context.shadowOffsetY = 2;
-context.shadowBlur = 5;
-context.shadowColor = 'rgba(0, 0, 0, 0.25)';
+
+contextLines.lineWidth = STROKE_WIDTH;
+contextLines.lineCap = "round";
+contextLines.lineJoin = "round";
+contextLines.shadowOffsetX = 2;
+contextLines.shadowOffsetY = 2;
+contextLines.shadowBlur = 5;
+contextLines.shadowColor = 'rgba(0, 0, 0, 0.25)';
 
 // кол-во символов в ленте
 var SYMBOLS_COUNT = [

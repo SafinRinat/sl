@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    canvas {
+      display: block;
+      margin: 15px auto;
+      border: 1px solid #dcdcdc;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="canvas"></canvas>
+
+  <script>
+    // кол-во барабанов
+    var REELS_COUNT = 5;
+    // кол-во линий
+    var ROWS_COUNT = 3;
+
+    // ширина символа
+    var SYMBOL_WIDTH = 142;
+    // высота символа
+    var SYMBOL_HEIGHT = 129;
+
+    var STROKE_WIDTH = 6;
+    var SYMBOL_MARGIN = 5;
+    var ROUNDED_RECT_RADIUS = 8;
+
+    // получаем ссылку на канвас
+    var canvas = document.getElementById("canvas");
+    // получаем его контекст для рисования
+    var context = canvas.getContext("2d");
+
+    // выставляем ширину
+    canvas.width = SYMBOL_WIDTH * REELS_COUNT;
+    // и высоту канваса
+    canvas.height = SYMBOL_HEIGHT * ROWS_COUNT;
+    context.lineWidth = STROKE_WIDTH;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    context.shadowOffsetX = 2;
+    context.shadowOffsetY = 2;
+    context.shadowBlur = 5;
+    context.shadowColor = 'rgba(0, 0, 0, 0.25)';
+
+    function roundedRect(x, y, width, height) {
+      context.beginPath();
+      context.moveTo(x, y + ROUNDED_RECT_RADIUS);
+      context.lineTo(x, y + height - ROUNDED_RECT_RADIUS);
+      context.arcTo(x, y + height, x + ROUNDED_RECT_RADIUS, y + height, ROUNDED_RECT_RADIUS);
+      context.lineTo(x + width - ROUNDED_RECT_RADIUS, y + height);
+      context.arcTo(x + width, y + height, x + width, y + height-ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+      context.lineTo(x + width, y + ROUNDED_RECT_RADIUS);
+      context.arcTo(x + width, y, x + width - ROUNDED_RECT_RADIUS, y, ROUNDED_RECT_RADIUS);
+      context.lineTo(x + ROUNDED_RECT_RADIUS, y);
+      context.arcTo(x, y, x, y + ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+      context.stroke();
+    }
+
+    function drawWinLine(line, count, color) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.strokeStyle = color;
+      context.beginPath();
+      context.moveTo(0, SYMBOL_HEIGHT * line[0] + SYMBOL_HEIGHT / 2);
+      for (var x = 0; x < line.length; x++) {
+        context.lineTo(
+          SYMBOL_WIDTH * x + SYMBOL_WIDTH / 2,
+          SYMBOL_HEIGHT * line[x] + SYMBOL_HEIGHT / 2
+        );
+      }
+      context.lineTo(
+        SYMBOL_WIDTH * line.length,
+        SYMBOL_HEIGHT * line[line.length - 1] + SYMBOL_HEIGHT / 2
+      );
+      context.stroke();
+      for (var i = 0; i < count; i++) {
+        context.clearRect(
+          SYMBOL_WIDTH * i + SYMBOL_MARGIN + STROKE_WIDTH,
+          line[i] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+          SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+          SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+        );
+        roundedRect(
+          SYMBOL_WIDTH * i + SYMBOL_MARGIN + STROKE_WIDTH,
+          line[i] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+          SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+          SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+        )
+      }
+    }
+
+    // demo
+    var counter = 0;
+    var lines = [
+      { line: [1, 1, 1, 1, 1], count: 0, color: "#f00" },
+      { line: [0, 0, 0, 0, 0], count: 0, color: "#0f0" },
+      { line: [2, 2, 2, 2, 2], count: 0, color: "#00f" },
+      { line: [0, 1, 2, 1, 0], count: 0, color: "#ff0" },
+      { line: [2, 1, 0, 1, 2], count: 0, color: "#0ff" }
+    ];
+
+    var lines_win = [
+      { line: [1, 1, 1, 1, 1], count: 2, color: "#f00" },
+      { line: [1, 1, 1, 1, 1], count: 3, color: "#f00" },
+      { line: [1, 1, 1, 1, 1], count: 4, color: "#f00" },
+      { line: [1, 1, 1, 1, 1], count: 5, color: "#f00" },
+
+      { line: [0, 0, 0, 0, 0], count: 2, color: "#0f0" },
+      { line: [0, 0, 0, 0, 0], count: 3, color: "#0f0" },
+      { line: [0, 0, 0, 0, 0], count: 4, color: "#0f0" },
+      { line: [0, 0, 0, 0, 0], count: 5, color: "#0f0" },
+
+      { line: [2, 2, 2, 2, 2], count: 2, color: "#00f" },
+      { line: [2, 2, 2, 2, 2], count: 3, color: "#00f" },
+      { line: [2, 2, 2, 2, 2], count: 4, color: "#00f" },
+      { line: [2, 2, 2, 2, 2], count: 5, color: "#00f" },
+
+      { line: [0, 1, 2, 1, 0], count: 2, color: "#ff0" },
+      { line: [0, 1, 2, 1, 0], count: 3, color: "#ff0" },
+      { line: [0, 1, 2, 1, 0], count: 4, color: "#ff0" },
+      { line: [0, 1, 2, 1, 0], count: 5, color: "#ff0" },
+
+      { line: [2, 1, 0, 1, 2], count: 2, color: "#0ff" },
+      { line: [2, 1, 0, 1, 2], count: 3, color: "#0ff" },
+      { line: [2, 1, 0, 1, 2], count: 4, color: "#0ff" },
+      { line: [2, 1, 0, 1, 2], count: 5, color: "#0ff" }
+    ];
+//    var lines = [
+//      { line: [0,1,0,1,0], count: 1, color: "#f00" },
+//      { line: [1,2,2,2,1], count: 2, color: "#0f0" },
+//      { line: [2,1,1,1,2], count: 3, color: "#00f" },
+//      { line: [1,1,1,1,0], count: 4, color: "#ff0" },
+//      { line: [2,2,2,0,0], count: 5, color: "#0ff" }
+//    ];
+
+    setInterval(function() {
+      drawWinLine(
+          lines_win[counter].line,
+          lines_win[counter].count,
+          lines_win[counter].color
+      );
+      counter++;
+      if (counter === lines_win.length) counter = 0;
+    }, 1000);
+
+  </script>
+</body>
+</html>

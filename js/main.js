@@ -1,9 +1,8 @@
 //run game
 var startButton = document.getElementById('start');
-var select_lines = document.getElementById('set_lines');
-var select_bet = document.getElementById('set_bet');
 var remove_line = document.getElementById('remove_line');
 var add_line = document.getElementById('add_line');
+var select_bet = document.getElementById('set_bet');
 var reduce_stakes = document.getElementById('reduce_stakes');
 var raise_stakes = document.getElementById('raise_stakes');
 
@@ -53,8 +52,8 @@ var symbolsSprite = [
 
 // линии, по которым проверять выигрыш
 var PAY_LINES = [
-    [1, 1, 1, 1, 1], // 1 индекс символов на барабане
     [0, 0, 0, 0, 0],// 2 индекс
+    [1, 1, 1, 1, 1], // 1 индекс символов на барабане
     [2, 2, 2, 2, 2],// 3 индекс
     [0, 1, 2, 1, 0],//4
     [2, 1, 0, 1, 2]//5
@@ -175,14 +174,88 @@ var WIN_COMB = [
         [2, 10], [3, 20], [4, 40], [5, 80]
     ]
 ];
+
 var money = 500; // деньги игрока
-//TODO: сделать функцию, которая будет изменять значение стваки по клику.
-var CURRENT_BET = [0.2, 0.5, 1.0, 2.5, 5]; // ставка
-//TODO: сделать функцию которая будет изменять активные линии, при условии, что максимальное значение 5
-var active_lines_count = 5; // кол-во активных линий, т.е. по которым играет игрок
+var BET_LIST = [0.00, 0.2, 0.5, 1.0, 2.5, 5]; // ставка
+var currrent_bet = parseFloat(0.00);//default 0.00
+var active_lines_count = 1; // кол-во активных линий, т.е. по которым играет игрок
 
 // лента слота, из которой будут браться случайные символы
 var REEL_SYMBOLS = [];
+
+var counter_bet_list = 0;
+
+function setBet(val) {
+    var select_lines = document.getElementById('set_bet');
+
+    if(typeof val !== undefined) {
+        if (val === "raise" && counter_bet_list < 5) {
+            counter_bet_list++;
+        }
+        if (val === "reduce" && counter_bet_list > 0) {
+            counter_bet_list--;
+        }
+    }
+
+    select_bet.innerHTML = parseFloat(BET_LIST[counter_bet_list]).toFixed(2);
+
+    currrent_bet = parseFloat(BET_LIST[counter_bet_list]);
+}
+
+
+
+raise_stakes.addEventListener("click", function () {
+    setBet("raise");
+});
+
+reduce_stakes.addEventListener("click", function () {
+    setBet("reduce");
+});
+
+// var select_bet = document.getElementById('set_bet');
+// var reduce_stakes = document.getElementById('reduce_stakes');
+// var raise_stakes = document.getElementById('raise_stakes');
+function setLines(val) {
+    var select_lines = document.getElementById('set_lines');
+    var counter = parseInt(select_lines.innerHTML);
+
+    if (counter < 0 || counter > 5) {
+        return false;
+    } else {
+        if(typeof val !== undefined) {
+            if (val === "add" && counter < 5) {
+                counter++;
+            }
+            if (val === "remove" && counter > 0) {
+                counter--;
+            }
+        }
+
+        active_lines_count = counter;
+        select_lines.innerHTML = counter;
+        if(counter === 0 ) {
+            drawWinLine(
+                PAY_LINES[counter],
+                0,
+                COLOR_LINES[counter]
+            );
+        } else {
+            drawWinLine(
+                PAY_LINES[counter -1],
+                0,
+                COLOR_LINES[counter -1]
+            );
+        }
+    }
+}
+
+add_line.addEventListener("click", function () {
+    setLines("add");
+});
+
+remove_line.addEventListener("click", function () {
+    setLines("remove");
+});
 
 // получаем набор символов для спина
 function getRandomInt(min, max) {
@@ -440,11 +513,11 @@ function spin(clicked) {
         // выигрыш
         var win = 0;
         // проверяем, есть ли деньги совершить ставку
-        if (money < CURRENT_BET[0] * active_lines_count) {
-            return printText('Не хватает денег на совершение ставки')
+        if (money < currrent_bet * active_lines_count) {
+            return printText('Не хватает денег на совершение ставки');
         }
         // делаем ставку, отнимает ставку от баланса
-        money -= CURRENT_BET[0] * active_lines_count;
+        money -= currrent_bet * active_lines_count;
         printText('---');
         // проверяем, есть ли выигрышные линии
         if (winLines.length) {
@@ -456,7 +529,7 @@ function spin(clicked) {
                     COLOR_LINES[winLines[i].lineColor[i]]
                 );
 
-                win += CURRENT_BET[0] * winLines[i].multiplier;
+                win += currrent_bet * winLines[i].multiplier;
 
                 printText('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +
                     '; кол-во символов: ' + winLines[i].count + '; коэфициент: ' + winLines[i].multiplier)
@@ -466,7 +539,7 @@ function spin(clicked) {
         // добавляем выигрыш к балансу
         money += win;
         current_win.innerHTML = win.toFixed(2);
-        printText('Ставка: ' + CURRENT_BET[0] + ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money);
+        printText('Ставка: ' + currrent_bet + ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money);
         //autogame
         // setTimeout(spin(true), 1000);
     }
@@ -491,10 +564,15 @@ function init(images) {
     spin();
 
     startButton.addEventListener("click", function () {
-        // заполняем симвоалми барабан
-        fillReelSymbols();
-        // запучкаем спин
-        spin(true);
+        console.log(currrent_bet);
+        if (currrent_bet === 0.00) {
+            return printText('Сделайте Вашу ставку!.')
+        } else  {
+            // заполняем симвоалми барабан
+            fillReelSymbols();
+            // запучкаем спин
+            spin(true);
+        }
     });
 
     // и потом каждую секунду

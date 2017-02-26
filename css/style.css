@@ -96,9 +96,9 @@ body {
 
 #lines {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
+    top: 40px;
+    left: 50%;
+    margin-left: -345px;
 }
 
 .controls {
@@ -228,11 +228,11 @@ body {
 }
 
 .line_btn.selected:nth-child(2) {
-    background-color: #0f0;
+    background-color: #f00;
 }
 
 .line_btn.selected:nth-child(3) {
-    background-color: #f00;
+    background-color: #0f0;
 }
 
 .line_btn.selected:nth-child(4) {
@@ -258,10 +258,11 @@ body {
     font-size: 40px;
 }
 
-.line_btn.line_btn_1.selected {
-    margin-bottom: 88px;
+.line_btn.line_btn_4.selected {
+    margin-top: 25px;
 }
 
+.line_btn.line_btn_1.selected,
 .line_btn.line_btn_2.selected {
-    margin-bottom: 82px;
+    margin-bottom: 50px;
 }

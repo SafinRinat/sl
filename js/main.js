@@ -59,6 +59,15 @@ var symbolsSprite = [
 ];
 
 // линии, по которым проверять выигрыш
+var PAY_LINES_NEW = [
+    { line: [0, 0, 0, 0, 0], color: "#f00" },
+    { line: [1, 1, 1, 1, 1], color: "#0f0" },
+    { line: [2, 2, 2, 2, 2], color: "#00f" },
+    { line: [0, 1, 2, 1, 0], color: "#ff0" },
+    { line: [2, 1, 0, 1, 2], color: "#0ff" }
+];
+console.log(PAY_LINES_NEW[0].line);
+
 var PAY_LINES = [
     [0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1],
@@ -68,11 +77,11 @@ var PAY_LINES = [
 ];
 
 var COLOR_LINES = [
-    "#f00",
-    "#0f0",
-    "#00f",
-    "#ff0",
-    "#0ff"
+
+
+
+
+
 ];
 
 // выигрышные комбинации

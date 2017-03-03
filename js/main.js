@@ -66,7 +66,6 @@ var PAY_LINES_NEW = [
     { line: [0, 1, 2, 1, 0], color: "#ff0" },
     { line: [2, 1, 0, 1, 2], color: "#0ff" }
 ];
-console.log(PAY_LINES_NEW[0].line);
 
 var PAY_LINES = [
     [0, 0, 0, 0, 0],
@@ -77,11 +76,11 @@ var PAY_LINES = [
 ];
 
 var COLOR_LINES = [
-
-
-
-
-
+    "#f00",
+    "#0f0",
+    "#00f",
+    "#ff0",
+    "#0ff"
 ];
 
 // выигрышные комбинации
@@ -309,6 +308,7 @@ function checkWinLines(symbols) {
         for (var comb = 0; comb < WIN_COMB[first_symbol].length; comb++) {
             // и прверяем, есть ли выигрышная комбинация для полученого кол-ва (counter)
             if (WIN_COMB[first_symbol][comb][0] === counter) {
+                console.log(active_lines[line]);
                 check_color_lines.push(PAY_LINES.indexOf(active_lines[line]));
                 // если есть, записываем все нужные данные в объект
                 //  и добавляем его к результату

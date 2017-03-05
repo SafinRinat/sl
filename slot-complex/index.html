@@ -245,7 +245,7 @@
     }
 
     function drawSymbols(symbols, reel) {
-      console.log(symbols, reel)
+//      console.log(symbols, reel)
       symbolsContext.clearRect(
         reel * SYMBOL_WIDTH,
         0,
@@ -271,12 +271,14 @@
       var result = [];
       var lines = [];
       var active_lines = PAY_LINES.slice(0, active_lines_count);
+
       for (var line = 0; line < active_lines.length; line ++) {
         lines[line] = [];
         for (var reel = 0; reel < active_lines[line].line.length; reel++) {
           lines[line].push(symbols[reel][active_lines[line].line[reel]])
         }
       }
+
       for (line = 0; line < lines.length; line++) {
         var first_symbol = lines[line][0];
         for (var i = 1; i < lines[line].length && lines[line][i] === first_symbol; i++) {}
@@ -338,7 +340,7 @@
           }
           money -= bet * active_lines_count;
           if (winLines.length) {
-            console.log('  Выпали линии:')
+            console.log('  Выпали линии:');
             for (var i = 0; i < winLines.length; i++) {
               win += bet * winLines[i].factor;
               console.log('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +

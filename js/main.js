@@ -16,7 +16,10 @@ var counterBetList = 0;
 var active_lines_count = 1; // кол-во активных линий, т.е. по которым играет игрок
 
 //canvas
-var symbolsSprite = [ "./images/sprites.jpg"];//спрайт или путь к спрайту с картинами канваса
+var symbolsSprite = [
+    "./images/sprites.jpg",
+    "./images/blur.jpg"
+];//спрайт или путь к спрайту с картинами канваса
 var drawLinesTimeoutId;
 var drawWinLinesTimeoutId;
 
@@ -119,8 +122,6 @@ contextLines.shadowBlur = 5;
 contextLines.shadowColor = 'rgba(0, 0, 0, 0.25)';
 
 function clearLines() {
-    clearTimeout(drawLinesTimeoutId);
-    clearTimeout(drawWinLinesTimeoutId);
     contextLines.clearRect(0, 0, linesCanvas.width, linesCanvas.height);
 }
 
@@ -222,10 +223,10 @@ function setLines(val) {
     if (typeof val === "undefined") {
         return false;
     }
-    clearLines();
+    // clearLines();
     var counter = parseInt(select_lines.innerHTML);// читаем текущее содержимое
     if (val === "add_line") {
-        if (counter === REELS_COUNT) {
+        if (counter === PAY_LINES.length) {
             counter = 1;
         }
         else {
@@ -234,12 +235,12 @@ function setLines(val) {
     }
     if (val === "remove_line") {
         if (counter === 1) {
-            counter = REELS_COUNT;
+            counter = PAY_LINES.length;
         } else {
             counter--;
         }
     }
-    clearLines();
+    // clearLines();
     drawLines(counter -1);
 
     active_lines_count = counter;
@@ -477,7 +478,7 @@ function drawReelsSymbols(randomSymbols) {
         for (var y = 0; y < ROWS_COUNT; y++) {
             // рисуем один конкретный символ
             contextSymbols.drawImage(
-                symbolsSprite, // картинка с символами
+                symbolsSprite[0], // картинка с символами
                 0, // расположение символа на спрайте по оси x
                 randomSymbols[x][y] * (SYMBOL_HEIGHT), // расположение символа на спрайте по оси y
                 SYMBOL_WIDTH, // ширина вырезаемого куска со спрайта
@@ -493,7 +494,7 @@ function drawReelsSymbols(randomSymbols) {
 
 function drawWinSymbol(symbol, x, y) {
     contextSymbols.drawImage(
-        symbolsSprite, // картинка с символами
+        symbolsSprite[0], // картинка с символами
         SYMBOL_WIDTH,
         symbol * SYMBOL_HEIGHT,
         SYMBOL_WIDTH,
@@ -591,7 +592,8 @@ function init(images) {
 
 // сначала загружаем все нужные картинки
 loadImages([
-    symbolsSprite
+    symbolsSprite[0],
+    symbolsSprite[1]
 ], function(images) {
     // и лишь потом запускаем скрипт
     init(images);

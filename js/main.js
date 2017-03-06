@@ -191,7 +191,7 @@ function drawLines(index) {
         );
         contextLines.stroke();
     }
-    drawLinesTimeoutId = setTimeout("clearLines()", 1000);
+    drawLinesTimeoutId = setTimeout(clearLines(), 1000);
 }
 
 function setBet(val) {

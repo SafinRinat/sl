@@ -166,7 +166,7 @@ body {
     transform: rotate(90deg);
 }
 
-.lines__result,
+.lines__remove-line,
 .bets__remove-bet {
     float: left;
 }
@@ -176,7 +176,7 @@ body {
     float: right;
 }
 
-.lines__remove-line,
+.lines__result,
 .bets__result {
     color: #000000;
     font-size: 28px;

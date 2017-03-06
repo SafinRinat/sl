@@ -10,7 +10,7 @@
     <meta name="description" content="Игра Слот-Автомат">
     <meta http-equiv="content-language" content="ru" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <link href="css/style.css?v-2" media="screen" rel="stylesheet" type="text/css" >
+    <link href="css/style.css?v=3" media="screen" rel="stylesheet" type="text/css" >
 </head>
 <body>
 <div id="app" class="page">
@@ -61,15 +61,15 @@
                         <div class="lines__title">
                             Линии
                         </div>
-                        <div class="lines__result btn" id="remove_line">
+                        <div class="js-line-control lines__remove-line btn" id="remove_line">
                             <span></span>
                         </div>
 
-                        <span class="lines__remove-line" id="set_lines">
+                        <span class="lines__result" id="set_lines">
                             1
                         </span>
 
-                        <div class="lines__add-line btn plus_btn" id="add_line">
+                        <div class="js-line-control lines__add-line btn plus_btn" id="add_line">
                            <span></span>
                            <span></span>
                         </div>
@@ -79,7 +79,7 @@
                         <div class="bets__title">
                             Ставка
                         </div>
-                        <div class="bets__remove-bet btn" id="reduce_stakes">
+                        <div class="js-bet-control bets__remove-bet btn" id="reduce_stakes">
                            <span></span>
                         </div>
 
@@ -87,7 +87,7 @@
                             0.20
                         </span>
 
-                        <div class="bets__add-bet btn plus_btn" id="raise_stakes">
+                        <div class="js-bet-control bets__add-bet btn plus_btn" id="raise_stakes">
                             <span></span>
                             <span></span>
                         </div>
@@ -105,6 +105,6 @@
         </div>
     </div>
 </div><!--END #app -->
-<script type="text/javascript" src="js/main.js?v=6"></script>
+<script type="text/javascript" src="js/main.js?v=13"></script>
 </body>
 </html>

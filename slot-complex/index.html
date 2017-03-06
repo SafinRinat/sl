@@ -64,7 +64,7 @@
       [ [2, 25], [3, 50], [4, 100], [5, 250] ],
       [ [2, 25], [3, 50], [4, 100], [5, 500] ],
       [ [2, 50], [3, 150], [4, 250], [5, 500] ],
-      [ [2, 50], [3, 250], [4, 500], [5, 1000] ],
+      [ [2, 50], [3, 250], [4, 500], [5, 1000] ]
     ];
     var STROKE_WIDTH = 6;
     var SYMBOL_MARGIN = 5;
@@ -317,8 +317,8 @@
       shuffleArray(reelSymbols);
 
       var symbols = getRandomSymbols();
-      for (var i = 0; i < REELS_COUNT; i++) {
-        drawSymbols(symbols[i], i);
+      for (var l = 0; l < REELS_COUNT; l++) {
+        drawSymbols(symbols[l], i);
       }
     }
 

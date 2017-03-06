@@ -1,24 +1,45 @@
-// get controls
-var select_lines = document.getElementById('set_lines');
+//run game
 var startButton = document.getElementById('start');
-var add_line = document.getElementById('add_line');
 var remove_line = document.getElementById('remove_line');
-var raise_stakes = document.getElementById('raise_stakes');
-var reduce_stakes = document.getElementById('reduce_stakes');
+var add_line = document.getElementById('add_line');
 var select_bet = document.getElementById('set_bet');
+var reduce_stakes = document.getElementById('reduce_stakes');
+var raise_stakes = document.getElementById('raise_stakes');
 
-// init config
-var money = 500; // деньги игрока
-var BET_LIST = [0.20, 0.50, 1.00, 2.50, 5.00];// ставка
-var currrent_bet = BET_LIST[0];//default 0.20
-// индекс дефолтной ставки
-var counterBetList = 0;
-var active_lines_count = 1; // кол-во активных линий, т.е. по которым играет игрок
+// кол-во барабанов
+var REELS_COUNT = 5;
+// кол-во линий
+var ROWS_COUNT = 3;
+// ссылка на canvas
+var canvas = document.getElementById("slot");
+var lines = document.getElementById("lines");
+// ширина символа
+var SYMBOL_WIDTH = 138;
+// высота символа
+var SYMBOL_HEIGHT = 138;
+// выставляем ширину
+canvas.width = SYMBOL_WIDTH * REELS_COUNT;
+// и высоту канваса
+canvas.height = SYMBOL_HEIGHT * ROWS_COUNT;
 
-//canvas
-var symbolsSprite = [ "./images/sprites.jpg"];//спрайт или путь к спрайту с картинами канваса
-var drawLinesTimeoutId;
-var drawWinLinesTimeoutId;
+lines.width = SYMBOL_WIDTH * REELS_COUNT;
+lines.height = SYMBOL_HEIGHT * ROWS_COUNT;
+
+// получаем его контекст для рисования
+var contextSymbols = canvas.getContext("2d");
+var contextLines = lines.getContext("2d");
+
+var STROKE_WIDTH = 6;
+var SYMBOL_MARGIN = 5;
+var ROUNDED_RECT_RADIUS = 8;
+
+contextLines.lineWidth = STROKE_WIDTH;
+contextLines.lineCap = "round";
+contextLines.lineJoin = "round";
+contextLines.shadowOffsetX = 2;
+contextLines.shadowOffsetY = 2;
+contextLines.shadowBlur = 5;
+contextLines.shadowColor = 'rgba(0, 0, 0, 0.25)';
 
 // кол-во символов в ленте
 var SYMBOLS_COUNT = [
@@ -32,14 +53,34 @@ var SYMBOLS_COUNT = [
     2, // K
     1 // A
 ];
+//спрайт или путь к спрайту с картинами канваса
+var symbolsSprite = [
+    "./images/sprites.jpg"
+];
 
 // линии, по которым проверять выигрыш
-var PAY_LINES = [
+var PAY_LINES_NEW = [
     { line: [0, 0, 0, 0, 0], color: "#f00" },
     { line: [1, 1, 1, 1, 1], color: "#0f0" },
     { line: [2, 2, 2, 2, 2], color: "#00f" },
     { line: [0, 1, 2, 1, 0], color: "#ff0" },
     { line: [2, 1, 0, 1, 2], color: "#0ff" }
+];
+console.log(PAY_LINES_NEW[0].line);
+var PAY_LINES = [
+    [0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1],
+    [2, 2, 2, 2, 2],
+    [0, 1, 2, 1, 0],
+    [2, 1, 0, 1, 2]
+];
+
+var COLOR_LINES = [
+    "#f00",
+    "#0f0",
+    "#00f",
+    "#ff0",
+    "#0ff"
 ];
 
 // выигрышные комбинации
@@ -86,52 +127,75 @@ var WIN_COMB = [
         [2, 10], [3, 20], [4, 40], [5, 80]
     ]
 ];
-var REEL_SYMBOLS = [];// лента слота, из которой будут браться случайные символы
-var REELS_COUNT = 5;// кол-во барабанов
-var ROWS_COUNT = 3;// кол-во линий
 
-// get canvas from draw
-// получаем его контекст для рисования
-var symbolsCanvas = document.getElementById("slot");
-var linesCanvas = document.getElementById("lines");
-var contextSymbols = symbolsCanvas.getContext("2d");
-var contextLines = linesCanvas.getContext("2d");
-var SYMBOL_WIDTH = 138;// ширина символа
-var SYMBOL_HEIGHT = 138;// высота символа
+var money = 500; // деньги игрока
+var BET_LIST = [0.20, 0.50, 1.00, 2.50, 5.00]; // ставка
+var currrent_bet = BET_LIST[0];//default 0.00
+var counterBetList = 0;
+var active_lines_count = 1; // кол-во активных линий, т.е. по которым играет игрок
 
-symbolsCanvas.width = SYMBOL_WIDTH * REELS_COUNT;// выставляем ширину
-symbolsCanvas.height = SYMBOL_HEIGHT * ROWS_COUNT;// и высоту канваса
-linesCanvas.width = symbolsCanvas.width;
-linesCanvas.height = symbolsCanvas.height;
+// лента слота, из которой будут браться случайные символы
+var REEL_SYMBOLS = [];
 
-var STROKE_WIDTH = 6;// ширина линии px
-var SYMBOL_MARGIN = 5;//отступ с каждой стороны при обведение линией символа
-var ROUNDED_RECT_RADIUS = 8;// border-radius stroke
-var BLUR_FPS = 25;
-var BLUR_FRAMES_COUNT = SYMBOLS_COUNT.length * 2;
+function setBet(val) {
+    var select_bet = document.getElementById('set_bet');
+    if(typeof val !== undefined) {
+        if (val === "raise" && counterBetList < 4) {
+            counterBetList++;
+        }
+        if (val === "reduce" && counterBetList > 0) {
+            counterBetList--;
+        }
+    }
 
-contextLines.lineWidth = STROKE_WIDTH;
-contextLines.lineCap = "round";//Определяет оформление концов линий. butt(используется по умолчанию), round, square отрисвоки концов линии
-contextLines.lineJoin = "round";//Определяет оформление соединений линий. miter (используется по умолчанию), round, bevel. http://xiper.net/manuals/canvas/2D-api/lineJoin
-contextLines.shadowOffsetX = 2;
-contextLines.shadowOffsetY = 2;
-contextLines.shadowBlur = 5;
-contextLines.shadowColor = 'rgba(0, 0, 0, 0.25)';
+    select_bet.innerHTML = BET_LIST[counterBetList].toFixed(2);
 
-function clearLines() {
-    clearTimeout(drawLinesTimeoutId);
-    clearTimeout(drawWinLinesTimeoutId);
-    contextLines.clearRect(0, 0, linesCanvas.width, linesCanvas.height);
+    currrent_bet = BET_LIST[counterBetList];
 }
 
-function clearSymbols() {
-    contextSymbols.clearRect(0, 0, symbolsCanvas.width, symbolsCanvas.height);
+
+
+raise_stakes.addEventListener("click", function () {
+    setBet("raise");
+});
+
+reduce_stakes.addEventListener("click", function () {
+    setBet("reduce");
+});
+
+function setLines(val) {
+    var select_lines = document.getElementById('set_lines');
+    var counter = parseInt(select_lines.innerHTML);
+
+    if (counter === 0 || counter > 5) {
+        return false;
+    } else {
+        if(typeof val !== undefined) {
+            if (val === "add" && counter < 5) {
+                counter++;
+            }
+            if (val === "remove" && counter > 1) {
+                counter--;
+            }
+        }
+        console.log(PAY_LINES[counter -1]);
+        drawLine(
+            PAY_LINES[counter -1],
+            COLOR_LINES[counter -1]
+        );
+
+        active_lines_count = counter;
+        select_lines.innerHTML = counter;
+    }
 }
 
-function clearCanvas() {
-    clearLines();
-    clearSymbols();
-}
+add_line.addEventListener("click", function () {
+    setLines("add");
+});
+
+remove_line.addEventListener("click", function () {
+    setLines("remove");
+});
 
 // получаем набор символов для спина
 function getRandomInt(min, max) {
@@ -149,20 +213,6 @@ function shuffleArray(arr) {
     }
 }
 
-function roundedRect(x, y, width, height) {
-    contextLines.beginPath();
-    contextLines.moveTo(x, y + ROUNDED_RECT_RADIUS);
-    contextLines.lineTo(x, y + height - ROUNDED_RECT_RADIUS);
-    contextLines.arcTo(x, y + height, x + ROUNDED_RECT_RADIUS, y + height, ROUNDED_RECT_RADIUS);
-    contextLines.lineTo(x + width - ROUNDED_RECT_RADIUS, y + height);
-    contextLines.arcTo(x + width, y + height, x + width, y + height-ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
-    contextLines.lineTo(x + width, y + ROUNDED_RECT_RADIUS);
-    contextLines.arcTo(x + width, y, x + width - ROUNDED_RECT_RADIUS, y, ROUNDED_RECT_RADIUS);
-    contextLines.lineTo(x + ROUNDED_RECT_RADIUS, y);
-    contextLines.arcTo(x, y, x, y + ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
-    contextLines.stroke();
-}
-
 function fillReelSymbols() {
     // заполняем нашу виртуальную ленту символами
     // согласно их колличеству
@@ -174,104 +224,22 @@ function fillReelSymbols() {
     shuffleArray(REEL_SYMBOLS);
 }
 
-function drawLines(index) {
-    for (var i = 0; i <= index; i++) {
-        contextLines.strokeStyle = PAY_LINES[i].color;
-        contextLines.beginPath();
-        contextLines.moveTo(0, SYMBOL_HEIGHT * PAY_LINES[i].line[0] + SYMBOL_HEIGHT / 2);
-        for (var x = 0; x < PAY_LINES[i].line.length; x++) {
-            contextLines.lineTo(
-                SYMBOL_WIDTH * x + SYMBOL_WIDTH / 2,
-                SYMBOL_HEIGHT * PAY_LINES[i].line[x] + SYMBOL_HEIGHT / 2
-            );
-        }
-        contextLines.lineTo(
-            SYMBOL_WIDTH * PAY_LINES[i].line.length,
-            SYMBOL_HEIGHT * PAY_LINES[i].line[PAY_LINES[i].line.length - 1] + SYMBOL_HEIGHT / 2
-        );
-        contextLines.stroke();
-    }
-    drawLinesTimeoutId = setTimeout("clearLines()", 1000);
-}
-
-function setBet(val) {
-    if (typeof val === "undefined") {
-        return false;
-    }
-    if (val === "raise_stakes") {
-        if (counterBetList >= BET_LIST.length -1) {
-            counterBetList = 0;
-        }
-        else {
-            counterBetList++;
-        }
-    }
-    if (val === "reduce_stakes") {
-        if (counterBetList <= BET_LIST[0]) {
-            counterBetList = BET_LIST.length -1;
-        } else {
-            counterBetList--;
-        }
-    }
-
-    select_bet.innerHTML = BET_LIST[counterBetList];
-    currrent_bet = BET_LIST[counterBetList];
-}
-
-function setLines(val) {
-    if (typeof val === "undefined") {
-        return false;
-    }
-    clearLines();
-    var counter = parseInt(select_lines.innerHTML);// читаем текущее содержимое
-    if (val === "add_line") {
-        if (counter === REELS_COUNT) {
-            counter = 1;
-        }
-        else {
-            counter++;
-        }
-    }
-    if (val === "remove_line") {
-        if (counter === 1) {
-            counter = REELS_COUNT;
-        } else {
-            counter--;
-        }
-    }
-    clearLines();
-    drawLines(counter -1);
-
-    active_lines_count = counter;
-    select_lines.innerHTML = active_lines_count;
-}
-
-raise_stakes.addEventListener("click", function () {
-    setBet(this.id);
-});
-reduce_stakes.addEventListener("click", function () {
-    setBet(this.id);
-});
-
-add_line.addEventListener("click", function () {
-    setLines(this.id);
-});
-remove_line.addEventListener("click", function () {
-    setLines(this.id);
-});
-
 // получаем набор символов для спина
 function getRandomSymbols() {
-    var symbols = []; // массив с барабанами
-    var shift;// сдвиг на ленте символов
-    var reel;// барабан
+    // массив с барабанами
+    var symbols = [];
+    // сдвиг на ленте символов
+    var shift;
+    // барабан
+    var reel;
     // для каждого барабана
     for (var i = 0; i < REELS_COUNT; i++) {
-        shift = getRandomInt(0, REEL_SYMBOLS.length - 1); // получаем случайный сдвиг
-
-
-        reel = REEL_SYMBOLS.slice(shift, shift + ROWS_COUNT);// из всей ленты берем срез, начиная со сдвига shift + 2 символа
+        // получаем случайный сдвиг
+        shift = getRandomInt(0, REEL_SYMBOLS.length - 1);
+        // из всей ленты берем срез, начиная со сдвига shift + 2 символа
         // то есть получаем срез из трех подряд символов с ленты
+        reel = REEL_SYMBOLS.slice(shift, shift + ROWS_COUNT);
+
         // на случай, если сдвиг был слишком велик,
         // на 1 или 2 символа меньше чем длина всей ленты, то тогда
         // результат среза вернет нам меньше символов, чем 3
@@ -284,23 +252,40 @@ function getRandomSymbols() {
             // о дополняем его из начала ленты недостающими символами
             reel = reel.concat(REEL_SYMBOLS.slice(0, ROWS_COUNT - reel.length));
         }
-        // 0 => Gold(6) // 1 => 10 // 2 => J // 3 => Q // 4 => K // 5 => A // 6 => Prince // 7 => Princess // 8 => Castle
+        // 0 => Gold(6)
+        // 1 => 10
+        // 2 => J
+        // 3 => Q
+        // 4 => K
+        // 5 => A
+        // 6 => Prince (хотел на оборот, 6 принцесса, 7 принц)
+        // 7 => Princess
+        // 8 => Castle
+
         symbols[i] = reel;
     }
     return symbols;
 }
 
 function checkWinLines(symbols) {
-    var result = [];// результат
-    var lines = [];// промежуьочный массив, соберем туда символы по играющим линиям
-    var active_lines = PAY_LINES.slice(0, active_lines_count);// выберем линии, которые сейчас играют, по которым, соответственно, будем искать выигрышь
-
+    // результат
+    var result = [];
+    // промежуьочный массив,
+    // соберем туда символы по играющим линиям
+    var lines = [];
+    // выберем линии, которые сейчас играют, по которым,
+    // соответственно, будем искать выигрышь
+    var active_lines = PAY_LINES.slice(0, active_lines_count);
+    //цвет выигрышных линий
+    var check_color_lines = [];
     // для всех активных линий выбираем символы из барабанов
-    for (var line = 0; line < active_lines.length; line++) {
-        lines[line] = [];// линия для проверки
-        // для всех позиций проверяемой линии выбираем символы из выпавших символов на барабанах
-        for (var reel = 0; reel < active_lines[line].line.length; reel++) {
-            lines[line].push(symbols[reel][active_lines[line].line[reel]]);
+    for (var line = 0; line < active_lines.length; line ++) {
+        // линия для проверки
+        lines[line] = [];
+        // для всех позиций проверяемой линии выбираем символы
+        // из выпавших символов на барабанах
+        for (var reel = 0; reel < active_lines[line].length; reel++) {
+            lines[line].push(symbols[reel][active_lines[line][reel]]);
         }
     }
     // для всех активных (проверяемых) линий
@@ -315,7 +300,7 @@ function checkWinLines(symbols) {
         // for (var i = 1; i < lines[line].length && lines[line][i] === first_symbol; i++) {}
 
         var counter = 1;
-        while (counter < lines[line].length && lines[line][counter] === first_symbol) {
+        while (lines[line][counter] === first_symbol) {
             counter++;
         }
         // дальше, берем коэфициенты символа (first_symbol),
@@ -324,14 +309,15 @@ function checkWinLines(symbols) {
         for (var comb = 0; comb < WIN_COMB[first_symbol].length; comb++) {
             // и прверяем, есть ли выигрышная комбинация для полученого кол-ва (counter)
             if (WIN_COMB[first_symbol][comb][0] === counter) {
+                check_color_lines.push(PAY_LINES.indexOf(active_lines[line]));
                 // если есть, записываем все нужные данные в объект
                 //  и добавляем его к результату
                 result.push({
                     symbol: first_symbol, // номер символа
                     count: counter, // сколько раз повторился
-                    line: active_lines[line].line,// расположение линии
-                    color: active_lines[line].color,
+                    line: active_lines[line], // расположение линии
                     multiplier: WIN_COMB[first_symbol][comb][1], // коэфициент
+                    lineColor: check_color_lines
                 })
             }
         }
@@ -385,35 +371,63 @@ function loadImages(imgSources, callback) {
         }
     })
 }
-function drawWinLines(winlines) {
-    var i = 0;
-    function draw() {
-        clearLines();
-        if (winlines.length === 1) {
-            if (!(i % 2)) {
-                drawWinLine(
-                    winlines[0].line,
-                    winlines[0].count,
-                    winlines[0].color
-                );
-            }
-        } else {
-            drawWinLine(
-                winlines[i % winlines.length].line,
-                winlines[i % winlines.length].count,
-                winlines[i % winlines.length].color
-            );
-        }
-        i++;
-        drawWinLinesTimeoutId = setTimeout(draw, 600);
-    }
-    draw();
+
+function roundedRect(x, y, width, height) {
+    contextLines.beginPath();
+    contextLines.moveTo(x, y + ROUNDED_RECT_RADIUS);
+    contextLines.lineTo(x, y + height - ROUNDED_RECT_RADIUS);
+    contextLines.arcTo(x, y + height, x + ROUNDED_RECT_RADIUS, y + height, ROUNDED_RECT_RADIUS);
+    contextLines.lineTo(x + width - ROUNDED_RECT_RADIUS, y + height);
+    contextLines.arcTo(x + width, y + height, x + width, y + height-ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+    contextLines.lineTo(x + width, y + ROUNDED_RECT_RADIUS);
+    contextLines.arcTo(x + width, y, x + width - ROUNDED_RECT_RADIUS, y, ROUNDED_RECT_RADIUS);
+    contextLines.lineTo(x + ROUNDED_RECT_RADIUS, y);
+    contextLines.arcTo(x, y, x, y + ROUNDED_RECT_RADIUS, ROUNDED_RECT_RADIUS);
+    contextLines.stroke();
 }
 
-function drawWinLine(line, count, color) {
+function drawLine(line, color) {
+    contextLines.clearRect(0, 0, lines.width, lines.height);
     contextLines.strokeStyle = color;
     contextLines.beginPath();
     contextLines.moveTo(0, SYMBOL_HEIGHT * line[0] + SYMBOL_HEIGHT / 2);
+    for (var x = 0; x < line.length; x++) {
+        contextLines.lineTo(
+            SYMBOL_WIDTH * x + SYMBOL_WIDTH / 2,
+            SYMBOL_HEIGHT * line[x] + SYMBOL_HEIGHT / 2
+        );
+    }
+    contextLines.lineTo(
+        SYMBOL_WIDTH * line.length,
+        SYMBOL_HEIGHT * line[line.length - 1] + SYMBOL_HEIGHT / 2
+    );
+    contextLines.stroke();
+
+    contextLines.clearRect(
+        SYMBOL_WIDTH * SYMBOL_MARGIN + STROKE_WIDTH,
+        line[0] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+        SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+        SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+    );
+
+    roundedRect(
+        SYMBOL_WIDTH * SYMBOL_MARGIN + STROKE_WIDTH,
+        line[0] * SYMBOL_HEIGHT + SYMBOL_MARGIN + STROKE_WIDTH,
+        SYMBOL_WIDTH - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2,
+        SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
+    );
+
+    setTimeout(function () {
+        contextLines.clearRect(0, 0, lines.width, lines.height);
+    }, 1000)
+}
+
+function drawWinLine(line, count, color) {
+    contextLines.clearRect(0, 0, lines.width, lines.height);
+    contextLines.strokeStyle = color;
+    contextLines.beginPath();
+    contextLines.moveTo(0, SYMBOL_HEIGHT * line[0] + SYMBOL_HEIGHT / 2);
+
     for (var x = 0; x < line.length; x++) {
         contextLines.lineTo(
             SYMBOL_WIDTH * x + SYMBOL_WIDTH / 2,
@@ -441,35 +455,12 @@ function drawWinLine(line, count, color) {
             SYMBOL_HEIGHT - SYMBOL_MARGIN * 2 - STROKE_WIDTH * 2
         );
     }
-}
 
-function drawBlur(progressCallback, totalCallback) {
-    for (var i = 0; i < REELS_COUNT; i++) {
-        ;(function(i) {
-            setTimeout(function() {
-                var l = 0;
-                var intervalId = setInterval(function() {
-                    symbolsContext.drawImage(
-                        blurSprite,
-                        l % BLUR_FRAMES_COUNT * SYMBOL_WIDTH,
-                        0,
-                        SYMBOL_WIDTH,
-                        SYMBOL_HEIGHT * ROWS_COUNT,
-                        i * SYMBOL_WIDTH,
-                        0,
-                        SYMBOL_WIDTH,
-                        SYMBOL_HEIGHT * ROWS_COUNT
-                    );
-                    l++;
-                    if (l === BLUR_FRAMES_COUNT * 2) {
-                        clearInterval(intervalId);
-                        if (progressCallback) progressCallback(i);
-                        if (i === REELS_COUNT - 1) totalCallback();
-                    }
-                }, 1000 / BLUR_FPS);
-            }, i * 100);
-        })(i)
-    }
+}
+// очищаем канвас
+function clearCanvas() {
+    contextSymbols.clearRect(0, 0, canvas.width, canvas.height);
+    contextLines.clearRect(0, 0, lines.width, lines.height);
 }
 
 function drawReelsSymbols(randomSymbols) {
@@ -491,22 +482,13 @@ function drawReelsSymbols(randomSymbols) {
     }
 }
 
-function drawWinSymbol(symbol, x, y) {
-    contextSymbols.drawImage(
-        symbolsSprite, // картинка с символами
-        SYMBOL_WIDTH,
-        symbol * SYMBOL_HEIGHT,
-        SYMBOL_WIDTH,
-        SYMBOL_HEIGHT,
-        x * SYMBOL_WIDTH,
-        y * SYMBOL_HEIGHT,
-        SYMBOL_WIDTH,
-        SYMBOL_HEIGHT
-    );
-}
-
-function getWon(winLines, win) {
+function drawWinElements(winLines, win) {
     for (var i = 0; i < winLines.length; i++) {
+        drawWinLine(
+            winLines[i].line,
+            winLines[i].count,
+            COLOR_LINES[winLines[i].lineColor[i]]
+        );
         printText('  ' + winLines[i].line + '; символ: ' + winLines[i].symbol +
             '; кол-во символов: ' + winLines[i].count + '; коэфициент: ' + winLines[i].multiplier);
         win += currrent_bet * winLines[i].multiplier;
@@ -519,13 +501,15 @@ function spin(clicked) {
     if(typeof clicked === "boolean") {
         var init_from_user = true;
     }
-    clearLines();
     // получаем набор символов для спина
     var randomSymbols = getRandomSymbols();
     var winLines = checkWinLines(randomSymbols);
     var player_blance = document.getElementById('player_balance');
     var current_win = document.getElementById('current_win');
     var win = 0;//default
+    // очищаем канвас
+    clearCanvas();
+
     // рисуем все символы из массива
     drawReelsSymbols(randomSymbols);
 
@@ -539,22 +523,15 @@ function spin(clicked) {
         printText('---');
         // проверяем, есть ли выигрышные линии
         if (winLines.length) {
-            for (var i = 0; i < winLines.length; i++) {
-                for (var l = 0; l < winLines[i].count; l++) {
-                    drawWinLines(winLines);
-                    drawWinSymbol(winLines[i].symbol, l, winLines[i].line[l])
-                }
-                win += currrent_bet * winLines[i].multiplier;
-            }
-            // drawWinLines(winLines);
-            // printText('  Выпали линии:');
-            // // добавляем выигрыш к балансу
-            // money += getWon(winLines, win);
+            printText('  Выпали линии:');
+            // добавляем выигрыш к балансу
+            win = drawWinElements(winLines, win);
+            money += win;
         }
 
         current_win.innerHTML = win.toFixed(2);
-        // printText('Ставка: ' + currrent_bet + ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money);
-        //autogame init example
+        printText('Ставка: ' + currrent_bet + ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money);
+        //autogame
         // setTimeout(spin(true), 1000);
     }
 
@@ -562,8 +539,6 @@ function spin(clicked) {
 }
 
 function init(images) {
-    // очищаем канвас
-    clearCanvas();
     // в images хранятся загруженые картинки, по порядку
     // первая и единственныя - это картинка с символами
     symbolsSprite = images[0];
@@ -576,13 +551,18 @@ function init(images) {
     }
     // заполняем симвоалми барабан
     fillReelSymbols();
+    // запучкаем спин
     spin();
 
     startButton.addEventListener("click", function () {
-        // заполняем симвоалми барабан
-        fillReelSymbols();
-        // запучкаем спин
-        spin(true);
+        if (currrent_bet === 0) {
+            return printText('Сделайте Вашу ставку!.')
+        } else  {
+            // заполняем симвоалми барабан
+            fillReelSymbols();
+            // запучкаем спин
+            spin(true);
+        }
     });
 
     // и потом каждую секунду

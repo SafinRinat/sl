@@ -310,17 +310,17 @@ function spin() {
   var symbols = getRandomSymbols();
   var winLines = checkWinLines(symbols);
 
-  el('button').map(function(btn) { btn.disabled = true })
+  el('button').map(function(btn) { btn.disabled = true });
 
   clearInterval(drawWinLinesTimeoutId);
   clearWinLines();
   if (money < BETS[bet_index] * active_lines_count) {
-    el('button').map(function(btn) { btn.disabled = false })
+    el('button').map(function(btn) { btn.disabled = false });
     return alert('Не хватает денег на совершение ставки')
   }
   money -= BETS[bet_index] * active_lines_count;
-  el('#money')[0].textContent = '$' + (money / 100).toFixed(2)
-  el('#win')[0].textContent = '$0.00'
+  el('#money')[0].textContent = '$' + (money / 100).toFixed(2);
+  el('#win')[0].textContent = '$0.00';
 
   drawBlur(
     function(i) {

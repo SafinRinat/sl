@@ -8,6 +8,7 @@ var reduce_stakes = document.getElementById('reduce_stakes');
 var select_bet = document.getElementById('set_bet');
 
 // init config
+var player_blance = document.getElementById('player_balance');
 var money = 500; // деньги игрока
 var BET_LIST = [0.20, 0.50, 1.00, 2.50, 5.00];// ставка
 var currrent_bet = BET_LIST[0];//default 0.20
@@ -16,10 +17,8 @@ var counterBetList = 0;
 var active_lines_count = 1; // кол-во активных линий, т.е. по которым играет игрок
 
 //canvas
-var symbolsSprite = [
-  "./images/sprites.jpg",
-  "./images/blur.jpg"
-];//спрайт или путь к спрайту с картинами канваса
+var symbolsSprite;//спрайт или путь к спрайту с картинами канваса
+var blurSprite;
 var drawLinesTimeoutId;
 var drawWinLinesTimeoutId;
 
@@ -341,10 +340,7 @@ function checkWinLines(symbols) {
   return result;
 }
 
-function printText(text, clear = false) {
-    if(clear === true) {
-        return document.querySelector('#output').textContent = text + "\n\n";
-    }
+function printText(text) {
     document.querySelector('#output').textContent += text + "\n\n";
 }
 
@@ -454,7 +450,7 @@ function drawBlur(progressCallback, totalCallback) {
             var l = 0;
             var intervalId = setInterval(function() {
                 contextSymbols.drawImage(
-                symbolsSprite[1],
+                blurSprite,
                 l % BLUR_FRAMES_COUNT * SYMBOL_WIDTH,
                 0,
                 SYMBOL_WIDTH,
@@ -478,18 +474,24 @@ function drawBlur(progressCallback, totalCallback) {
 
 function drawReelsSymbols(randomSymbols) {
   for (var x = 0; x < REELS_COUNT; x++) {
+    contextSymbols.clearRect(
+      x * SYMBOL_WIDTH,
+      0,
+      SYMBOL_WIDTH,
+      SYMBOL_HEIGHT * ROWS_COUNT
+    );
     for (var y = 0; y < ROWS_COUNT; y++) {
       // рисуем один конкретный символ
       contextSymbols.drawImage(
-        symbolsSprite[0], // картинка с символами
-        0, // расположение символа на спрайте по оси x
-        randomSymbols[x][y] * (SYMBOL_HEIGHT), // расположение символа на спрайте по оси y
-        SYMBOL_WIDTH, // ширина вырезаемого куска со спрайта
-        SYMBOL_HEIGHT, // высота вырезаемого куска со спрайта
-        x * SYMBOL_WIDTH, // отступ на канвасе слева (по x)
-        y * SYMBOL_HEIGHT, // отступ на канвасе сверху (по y)
-        SYMBOL_WIDTH, // ширина рисуемой картинки
-        SYMBOL_HEIGHT // высота рисуемой картинки
+        symbolsSprite,
+        0,
+        randomSymbols[x][y] * (SYMBOL_HEIGHT),
+        SYMBOL_WIDTH,
+        SYMBOL_HEIGHT,
+        x * SYMBOL_WIDTH,
+        y * SYMBOL_HEIGHT,
+        SYMBOL_WIDTH,
+        SYMBOL_HEIGHT
       );
     }
   }
@@ -502,24 +504,25 @@ function drawSymbols(symbols, reel) {
         SYMBOL_WIDTH,
         SYMBOL_HEIGHT * ROWS_COUNT
     );
+    // рисуем один конкретный символ
     for (var y = 0; y < ROWS_COUNT; y++) {
         contextSymbols.drawImage(
-            symbolsSprite[0],
-            0,
-            symbols[y] * SYMBOL_HEIGHT,
-            SYMBOL_WIDTH,
-            SYMBOL_HEIGHT,
-            reel * SYMBOL_WIDTH,
-            y * SYMBOL_HEIGHT,
-            SYMBOL_WIDTH,
-            SYMBOL_HEIGHT
+            symbolsSprite,// картинка с символами
+            0,// расположение символа на спрайте по оси x
+            symbols[y] * SYMBOL_HEIGHT,// расположение символа на спрайте по оси y
+            SYMBOL_WIDTH,// ширина вырезаемого куска со спрайта
+            SYMBOL_HEIGHT,// высота вырезаемого куска со спрайта
+            reel * SYMBOL_WIDTH,// отступ на канвасе слева (по x)
+            y * SYMBOL_HEIGHT,// отступ на канвасе сверху (по y)
+            SYMBOL_WIDTH,// ширина рисуемой картинки
+            SYMBOL_HEIGHT// высота рисуемой картинки
         );
     }
 }
 
 function drawWinSymbol(symbol, x, y) {
   contextSymbols.drawImage(
-    symbolsSprite[0], // картинка с символами
+    symbolsSprite, // картинка с символами
     SYMBOL_WIDTH,
     symbol * SYMBOL_HEIGHT,
     SYMBOL_WIDTH,
@@ -532,62 +535,59 @@ function drawWinSymbol(symbol, x, y) {
 }
 
 function spin(clicked) {
-    if(typeof clicked === "boolean") {
-        var init_from_user = true;
-    }
-    clearCanvas();
-    // получаем набор символов для спина
+  if (typeof clicked !== "undefined") {
     var randomSymbols = getRandomSymbols();
     var winLines = checkWinLines(randomSymbols);
-    var player_blance = document.getElementById('player_balance');
     var current_win = document.getElementById('current_win');
-    // рисуем все символы из массива
-    drawReelsSymbols(randomSymbols);
+    var win = 0;//default
     // делаем ставку, отнимает ставку от баланса
     money -= currrent_bet * active_lines_count;
-    if (init_from_user) {
-        drawBlur(
-            function(i) {
-                drawSymbols(randomSymbols[i], i);
-            },
-            function() {
-                var win = 0;//default
-                // проверяем, есть ли выигрышные линии
-                if (winLines.length) {
-                    var winMessage = "";
-                    for (var i = 0; i < winLines.length; i++) {
-                        for (var l = 0; l < winLines[i].count; l++) {
-                            drawWinSymbol(winLines[i].symbol, l, winLines[i].line[l]);
-                        }
-                        drawWinLines(winLines);
-                        win += currrent_bet * winLines[i].multiplier;
-                        winMessage = "Выигрышные линии:  " + winLines[i].line + "; символ: " + winLines[i].symbol +
-                            "; кол-во символов: " + winLines[i].count + "; коэфициент: " + winLines[i].multiplier;
-                        printText(winMessage);
-                    }
-                    // // добавляем выигрыш к балансу
-                    money += win;
-                }
-
-            }
-        );
-        current_win.innerHTML = win.toFixed(2);
-        var winLog = 'Ставка: ' + currrent_bet +
-            ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money.toFixed(2);
-        printText(winLog);
-        //autogame init example
-        // setTimeout(spin(true), 1000);
-    }
-
     player_blance.innerHTML = money.toFixed(2);
+    current_win.innerHTML = win.toFixed(2);
+    drawBlur(
+      function(i) {
+        // // рисуем все символы из массива
+        drawSymbols(randomSymbols[i], i);
+      },
+      function() {
+        // проверяем, есть ли выигрышные линии
+        if (winLines.length > 0) {
+            // var winMessage = "";
+            // var winLog = 'Ставка: ' + currrent_bet +
+            //     ' x ' + active_lines_count + ';\t Выигрыш: ' + win.toFixed(2) + ';\t' + 'Баланс: ' + money.toFixed(2);
+            for (var i = 0; i < winLines.length; i++) {
+                for (var l = 0; l < winLines[i].count; l++) {
+                    drawWinSymbol(winLines[i].symbol, l, winLines[i].line[l]);
+                }
+                drawWinLines(winLines);
+                win += currrent_bet * winLines[i].multiplier;
+                // winMessage = "Выигрышные линии:  " + winLines[i].line + "; символ: " + winLines[i].symbol +
+                //     "; кол-во символов: " + winLines[i].count + "; коэфициент: " + winLines[i].multiplier;
+                // printText(winMessage);
+            }
+          // добавляем выигрыш к балансу
+          money += win;
+          player_blance.innerHTML = money.toFixed(2);
+          current_win.innerHTML = win.toFixed(2);
+          // printText(winLog);
+        } else {
+          // printText("К сожалению в этот раз Вы не выиграли.");
+        }
+      }
+    );
+      //autogame init example
+      // setTimeout(spin(true), 1000);
+  }
 }
 
 function init(images) {
+  player_blance.innerHTML = money.toFixed(2);
   // очищаем канвас
   clearCanvas();
   // в images хранятся загруженые картинки, по порядку
   // первая и единственныя - это картинка с символами
-  symbolsSprite = images;
+  symbolsSprite = images[0];
+  blurSprite = images[1];
   // заполняем нашу виртуальную ленту символами
   // согласно их колличеству
   for (var i = 0; i < SYMBOLS_COUNT.length; i++) {
@@ -595,34 +595,32 @@ function init(images) {
       REEL_SYMBOLS.push(i);
     }
   }
-
-  var randomSymbols = getRandomSymbols();
-  for (var x = 0; x < REELS_COUNT; x++) {
-        drawSymbols(randomSymbols[x], x);
-  }
   // заполняем симвоалми барабан
   fillReelSymbols();
-  spin();
+  // получаем набор символов для спина
+  var randomSymbols = getRandomSymbols();
+  for (var x = 0; x < REELS_COUNT; x++) {
+    drawSymbols(randomSymbols[x], x);
+  }
 
-  startButton.addEventListener("click", function () {
+
+  startButton.addEventListener("click", function (e) {
+    clearLines();
     if(money < currrent_bet * active_lines_count) {
-      printText("Не хватает денег на совершение ставки", true);
+      printText("Не хватает денег на совершение ставки");
       return false;
     }
-    // заполняем симвоалми барабан
-    fillReelSymbols();
     // запучкаем спин
-    spin(true);
+    spin(e.type);
   });
-
   // и потом каждую секунду
   // setInterval(spin, 1000);
 }
 
 // сначала загружаем все нужные картинки
 loadImages([
-    symbolsSprite[0],
-    symbolsSprite[1]
+    "./images/sprites.jpg",
+    "./images/blur.jpg"
 ], function(images) {
     // и лишь потом запускаем скрипт
     init(images);

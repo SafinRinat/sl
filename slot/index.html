@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Тестовое задание Slot machine</title>
+    <meta name="keywords" content="игра Слот автомат">
+    <meta name="description" content="Игра Слот-Автомат">
+    <meta http-equiv="content-language" content="ru" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link href="css/style.css?v=3" media="screen" rel="stylesheet" type="text/css" >
+</head>
+<body>
+<div id="app" class="page">
+    <div id="container">
+        <div class="slot-area">
+            <canvas id='slot'>Your browser does not support the HTML5 canvas tag.</canvas><!--END canvas#slot -->
+            <canvas id='lines'>Your browser does not support the HTML5 canvas tag.</canvas><!--END canvas#lines -->
+
+            <div id="lines_btn_container">
+                <div class="left_panel">
+                    <div class="line_btn line_btn_4 selected" data-line="4">4</div>
+                    <div class="line_btn line_btn_1 selected" data-line="1">1</div>
+                    <div class="line_btn line_btn_2 selected" data-line="2">2</div>
+                    <div class="line_btn line_btn_3 selected" data-line="3">3</div>
+                    <div class="line_btn line_btn_5 selected" data-line="5">5</div>
+                </div>
+                <div class="right_panel">
+                    <div class="line_btn line_btn_4 selected" data-line="4">4</div>
+                    <div class="line_btn line_btn_1 selected" data-line="1">1</div>
+                    <div class="line_btn line_btn_2 selected" data-line="2">2</div>
+                    <div class="line_btn line_btn_3 selected" data-line="3">3</div>
+                    <div class="line_btn line_btn_5 selected" data-line="5">5</div>
+                </div>
+            </div>
+
+            <div class="flex-container">
+                <div class="player-balance">
+                    <div class="player-balance__title title">
+                        Баланс:
+                    </div>
+                    <div class="player-balance__current-summ" id="player_balance">
+                        0.00
+                    </div>
+                </div>
+
+                <div class="win-balance">
+                    <div class="win-balance__title title">
+                        Выигрышь:
+                    </div>
+                    <div class="win-balance__summ" id="current_win">
+                        0.00
+                    </div>
+                </div>
+
+                <div class="flex-container controls">
+
+                    <div class="controls__lines lines">
+                        <div class="lines__title">
+                            Линии
+                        </div>
+                        <div class="js-line-control lines__remove-line btn" id="remove_line">
+                            <span></span>
+                        </div>
+
+                        <span class="lines__result" id="set_lines">
+                            1
+                        </span>
+
+                        <div class="js-line-control lines__add-line btn plus_btn" id="add_line">
+                           <span></span>
+                           <span></span>
+                        </div>
+                    </div><!-- END /.lines -->
+
+                    <div class="controls__bets bets">
+                        <div class="bets__title">
+                            Ставка
+                        </div>
+                        <div class="js-bet-control bets__remove-bet btn" id="reduce_stakes">
+                           <span></span>
+                        </div>
+
+                        <span class="bets__result" id="set_bet">
+                            0.20
+                        </span>
+
+                        <div class="js-bet-control bets__add-bet btn plus_btn" id="raise_stakes">
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div><!-- END /.bets -->
+
+                    <div class="contorls__start-game start-game">
+                        <input class="btn-green" type="button" id="start" value="Играть">
+                    </div><!-- END /.startGame -->
+
+                </div><!-- END /.controls -->
+
+            </div>
+
+        </div>
+    </div>
+</div><!--END #app -->
+<script type="text/javascript" src="js/script.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+/******************************************\
+                reset
+\******************************************/
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, a, em, img, small, strong, sub, sup, b, u, i, ol,
+ul, li, form, label, table, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+
+body, html {
+  height: 100%;
+}
+
+* {
+  outline: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/******************************************\
+                grid styles
+\******************************************/
+
+body {
+  font: normal 400 16px/100% serif;
+  margin: 0 auto;
+}
+
+
+.page {
+  min-height: 100%;
+  background: linear-gradient(to bottom,#83bfc9 0%,#c5e5d8 100%);
+}
+
+#container,
+.flex-container {
+  padding: 12px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+#container {
+  -ms-flex-pack: center;
+  justify-content: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.flex-container {
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+  /*align-items: stretch;*/
+  /*align-content: space-between;*/
+}
+
+.player-balance,
+.win-balance {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+}
+
+.player-balance__current-summ,
+.win-balance__summ {
+  display: inline-block;
+}
+
+.lines,
+.bets {
+  width: 34%;
+  text-align: center;
+  padding: 10px 20px;
+  background: #eee;
+  border: 1px solid #000;
+}
+
+.start-game {
+  width: 30%;
+}
+
+/******************************************\
+                main styles
+\******************************************/
+.slot-area {
+  width: 854px;
+  background: #ffffff;
+  padding: 38px 80px;
+  border-radius: 4px;
+  box-shadow: 0 2px 46px rgba(0,0,0,.07);
+  position: relative;
+}
+
+#slot {
+  border: 2px groove darkturquoise;
+}
+
+#lines {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  margin-left: -345px;
+}
+
+.controls {
+  margin-top: 12px;
+  border-top: 1px solid #e2e3e8;
+  align-items: center;
+}
+
+.title {
+  display: inline-block;
+  padding-right: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.btn-green {
+  height: 45px;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  border-radius: 3px;
+  outline: none;
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #47c5a2;
+}
+.btn-green.btn-disabled,
+.btn-green.btn-disabled:hover {
+  background: #8e8e8e;
+  color: #000;
+}
+
+.btn-green:hover {
+  transition: .1s;
+  background-color: #53c9a8;
+}
+
+.btn {
+  width: 50px;
+  height: 40px;
+  padding-top: 6px;
+  border-top: 3px solid #23aec8;
+  border-bottom: 3px solid #23aec8;
+  border-radius: 6px;
+  background: -moz-linear-gradient(#102b4b 0,#07111f 46%,#07111f 54%,#102b4b 100%);
+  background: -webkit-linear-gradient(#102b4b 0,#07111f 46%,#07111f 54%,#102b4b 100%);
+  background: linear-gradient(#102b4b 0,#07111f 46%,#07111f 54%,#102b4b 100%);
+  text-align: center;
+  font-size: 36px;
+  text-shadow: 0 0 10px #000;
+  position: relative;
+  cursor: pointer;
+}
+
+.btn span {
+  position: absolute;
+  top: 13px;
+  right: 10px;
+  left: 10px;
+  height: 8px;
+  background: #fff;
+}
+
+.plus_btn span:last-child {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.lines__remove-line,
+.bets__remove-bet {
+  float: left;
+}
+
+.lines__add-line,
+.bets__add-bet {
+  float: right;
+}
+
+.lines__result,
+.bets__result {
+  color: #000000;
+  font-size: 28px;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+.lines__title,
+.bets__title {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 20px;
+  padding-bottom: 10px;
+}
+/******************************************\
+              lines styles
+\******************************************/
+#lines_btn_container {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.left_panel {
+  padding-top: 2px;
+  left: 10px;
+}
+
+#lines_btn_container .right_panel {
+  right: 10px;
+}
+
+#lines_btn_container .left_panel,
+#lines_btn_container .right_panel {
+  position: absolute;
+  width: 60px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.line_btn.selected {
+  color: #fff;
+}
+
+.line_btn.selected:nth-child(1) {
+  background-color: #ff0;
+}
+
+.line_btn.selected:nth-child(2) {
+  background-color: #f00;
+}
+
+.line_btn.selected:nth-child(3) {
+  background-color: #0f0;
+}
+
+.line_btn.selected:nth-child(4) {
+  background-color: #00f;
+}
+
+.line_btn.selected:nth-child(5) {
+  background-color: #0ff;
+}
+
+.line_btn {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+  padding-top: 18px;
+  padding-left: 1px;
+  height: 60px;
+  border: 3px solid #000;
+  border-radius: 60px;
+  background-color: #6f6f6f;
+  color: #8e8e8e;
+  text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 3px 0 0 #000, 0 3px 0 #000, -3px 0 0 #000, 0 -3px 0 #000;
+  letter-spacing: 2px;
+  font-size: 40px;
+}
+
+.line_btn.line_btn_4.selected {
+  margin-top: 25px;
+}
+
+.line_btn.line_btn_1.selected,
+.line_btn.line_btn_2.selected {
+  margin-bottom: 50px;
+}

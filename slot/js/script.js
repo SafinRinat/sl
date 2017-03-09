@@ -5,6 +5,7 @@ var remove_line = document.getElementById('remove_line');
 var raise_stakes = document.getElementById('raise_stakes');
 var reduce_stakes = document.getElementById('reduce_stakes');
 var select_bet = document.getElementById('set_bet');
+var line_btn = document.querySelectorAll("div.line_btn");
 
 var player_blance = document.getElementById('player_balance');
 var money = 500;
@@ -378,6 +379,7 @@ function spin(element, arrReelsSymbols, reelsCount, rowsCount) {
                   current_win.innerHTML = win.toFixed(2);
               }
               el.disabled = false;
+              el.classList.remove("btn-disabled");
           }
         );
     }
@@ -398,9 +400,12 @@ function init(images) {
 
     startButton.addEventListener("click", function () {
         this.disabled = true;
+        this.classList.add("btn-disabled");
         clearLines();
         if(money < currrent_bet * active_lines_count) {
             alert("Не хватает денег на совершение ставки");
+            this.disabled = false;
+            this.classList.remove("btn-disabled");
             return false;
         }
         spin(this, REEL_SYMBOLS,  REELS_COUNT, ROWS_COUNT);
@@ -478,8 +483,6 @@ function setLine(element) {
         });
     }
 }
-
-var line_btn = document.querySelectorAll("div.line_btn");
 
 setLine(line_btn);
 
